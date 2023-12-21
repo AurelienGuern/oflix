@@ -20,4 +20,17 @@ class MainController extends AbstractController
             'movies' => $movies,
         ]);
     }
+
+    #[Route('/show/{id}', name: 'front_main_show')]
+    public function show($id) : Response
+    {
+        
+        $movie = MovieModel::getMovieById($id);
+      
+
+        return $this->render('main/show.html.twig', [
+            'movie' => $movie,
+        ]);
+    }
 }
+
