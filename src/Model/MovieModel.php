@@ -1,6 +1,8 @@
 <?php
 
 namespace  App\Model;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class MovieModel
 {
@@ -85,8 +87,10 @@ class MovieModel
         return null; // Retourne null si aucun film correspondant à l'ID n'est trouvé
     }
 
-    static public function index()
-    {
-        return;
-    }
+    static public function getFavoriteMovies(SessionInterface $session)
+{
+    return $session->get('favorite_movies', []);
+}
+
+
 }

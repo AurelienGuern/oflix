@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Model\MovieModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -96,9 +97,10 @@ class MainController extends AbstractController
             $session->set('theme', 'allocine');
         }
 
-        $this->addFlash('success', 
-        'votre thème a été changé !');
-
+        $this->addFlash(
+            'success',
+            'votre thème a été changé !'
+        );
         return $this->redirectToRoute(('front_main_home'));
     }
 }
