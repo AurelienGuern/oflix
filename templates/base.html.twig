@@ -30,7 +30,12 @@
 	<body>
 
 		<!-- Nav -->
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		{% if app.session.get('theme') == 'allocine' %}
+			<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fecc00;">
+		{% else %}
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		{% endif %}
+		
 			<div class="container-fluid">
 			{# REFER : https://symfony.com/doc/current/templates.html#linking-to-pages #}
 				<a href="{{ path('front_main_home') }}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none header-logo">
@@ -108,7 +113,16 @@
     <!-- footer -->
     <footer class="container-fluid py-4 border-top text-center">
         <span class="text-muted">O'flix made with &hearts; at O'clock !
-            <br><small>Thème :<a href="" class="link-secondary text-decoration-none"><i class="bi bi-toggle-on mx-1"></i>Netflix</a></small></a>
+            <br><small>Thème :
+			<a href="{{ path('front_main_switcher') }}" class="link-secondary text-decoration-none">
+
+			{% if app.session.get('theme') == 'allocine' %}
+				<i class="bi bi-toggle-off mx-1"></i>Allociné</a></small></a>
+			{% else %}
+				<i class="bi bi-toggle-on mx-1"></i>Netflix</a></small></a>
+			{% endif %}
+
+			
         </span>
     </footer>
 
