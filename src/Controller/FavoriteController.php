@@ -19,3 +19,6 @@ class FavoriteController extends AbstractController
         return $this->render('favorites/index.html.twig', []);
     }
 }
+// Bouton rempli c'est aux fav, sinon non
+// Quand on ajoute ok
+// Vider la liste = aucun fav (session destroy ?)
