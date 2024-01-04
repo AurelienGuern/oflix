@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Entity\Season;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MovieTestController extends AbstractController
 {
@@ -92,6 +93,51 @@ class MovieTestController extends AbstractController
         $entityManager->flush();
         // A noter : $em->persist() pas utile ici car récupéré via Doctrine
         dd($movie);
+
+        return $this->render('movie_test/index.html.twig', [
+            'controller_name' => 'MovieTestController',
+        ]);
+    }
+
+    #[Route('/movie/test/fill', name: 'app_movie_test_fill')]
+    public function fill(EntityManagerInterface $entityManager): Response
+    {
+        // on récupère les données de data.php soit le tableau $shows
+        include(__DIR__ . '/../../sources/data.php');
+        // dd($shows);
+        // on insère dana le BDD les données du tableau
+        foreach ($shows as $show) {
+            // l'objet de add est d'ajouter un film à la base
+            $movie = new Movie;
+            $movie->setTitle($show['title']);
+            $movie->setReleaseDate(new \DateTimeImmutable($show['release_date']));
+            $movie->setDuration($show['duration']);
+            $movie->setSummary($show['summary']);
+            $movie->setSynopsis($show['synopsis']);
+            $movie->setPoster($show['poster']);
+            $movie->setRating($show['rating']);
+            $movie->setType($show['type']);
+
+            // on veut ausii rajouter des saisons aux séries
+            if ($movie->getType() === 'Série') {
+                // on crée une saison
+                $season = new Season;
+                $season->setNumber(1);
+                $season->setEpisodeNumber(rand(6,12));
+                // on doit associer la saison au film
+                $season->setMovie($movie);
+                // les deux sont équivalent, mais Symfony conseille de faire l'association du coté du owning side 
+                // $movie->addSeason($season);
+                $entityManager->persist($season);
+            }
+
+            // tell Doctrine you want to (eventually) save the Product (no queries yet)
+            $entityManager->persist($movie);
+        }
+
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+        return new Response("ajout films et saisons");
 
         return $this->render('movie_test/index.html.twig', [
             'controller_name' => 'MovieTestController',
