@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\MovieModel;
+use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,17 +12,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class FavoriteController extends AbstractController
 {
     #[Route('/favorites', name: 'front_favorites_index')]
-    public function index(SessionInterface $session): Response
+    public function index(SessionInterface $session, MovieRepository $movieRepository): Response
     {
         // Récupérer tous les films
-        $allMovies = MovieModel::getMovies();
+        $allMovies = $movieRepository->findAll();
+        
     
         // Récupérer les films favoris à partir de la session
         $favoriteMoviesIds = MovieModel::getFavoriteMovies($session);
     
         // Filtrer les films pour afficher uniquement les favoris
         $favoriteMovies = array_filter($allMovies, function ($movie) use ($favoriteMoviesIds) {
-            return in_array($movie['id'], $favoriteMoviesIds);
+            return in_array($movie->getId(), $favoriteMoviesIds);
         });
     
         return $this->render('favorites/index.html.twig', [

@@ -4,13 +4,16 @@ namespace App\Controller;
 
 // use App\Model\MovieModel;
 
+use App\Entity\Casting;
+use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MainController extends AbstractController
 {
@@ -20,10 +23,12 @@ class MainController extends AbstractController
      * @return Response 
      */
     #[Route('/', name: 'front_main_home')]
-    public function home(MovieRepository $movieRepository): Response
+    public function home(MovieRepository $movieRepository, GenreRepository $genreRepository): Response
     {
+    
         return $this->render('main/home.html.twig', [
-            'movies' => $movieRepository->findAll()
+            'movies' => $movieRepository->findAll(),
+            'genres' => $genreRepository->findAll()
         ]);
     }
 
@@ -33,12 +38,13 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/movies', name: 'front_main_index')]
-    public function index(MovieRepository $movieRepository): Response
+    public function index(MovieRepository $movieRepository, GenreRepository $genreRepository): Response
     {
         // On doit récupérer la liste des films
         
         return $this->render('main/home.html.twig', [
             'movies' => $movieRepository->findAll(),
+            'genres' => $genreRepository->findAll()
         ]);
     }
 
@@ -47,7 +53,7 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id<\d+>}', name: 'front_main_show')]
-    public function show(Movie $movie): Response
+    public function show(Movie $movie, Genre $genre, Casting $casting): Response
     {
         // On doit récupérer le film avec $id
       
@@ -64,7 +70,8 @@ class MainController extends AbstractController
 
         return $this->render('main/show.html.twig', [
             'movie' => $movie,
-            'casting' => $movie->getCastings()
+            'genre' => $genre,
+            'casting' => $casting
         ]);
     }
     #[Route('/switch', name: 'front_main_switcher')]
@@ -90,5 +97,23 @@ class MainController extends AbstractController
             'votre thème a été changé !'
         );
         return $this->redirectToRoute(('front_main_home'));
+    }
+
+    #[Route('/genres', name: 'app_genres')]
+    public function genres(GenreRepository $genreRepository): Response
+    {
+        return $this->render('genre/index.html.twig', [
+            'genres' => $genreRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/genre/{id}', name: 'show_genre')]
+    public function genre(GenreRepository $genreRepository, Genre $genre): Response
+    {
+    
+        return $this->render('genre/show.html.twig', [
+            'genre' => $genre,
+            'movies' => $genre->getMovie()
+        ]);
     }
 }

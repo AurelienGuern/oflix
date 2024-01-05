@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détail du film
+{% block title %}Films du genre "{{genre.name}}" : 
 {% endblock %}
 
 {% block body %}
-
+<h1> Films du genre "{{genre.name}}" </h1>
 	<div class="container bg-lighttt pt-5">
 
 		<div class="row mb-2">
 
 			<div class="col">
 
-				<div class="row g-0 borderrr rrrounded overflow-hidden flex-md-row align-items-start mb-4 shadow-smmm position-relative">
+				{# <div class="row g-0 borderrr rrrounded overflow-hidden flex-md-row align-items-start mb-4 shadow-smmm position-relative">
 					<div class="col-4 movie__poster img-thumbnail" style="background-image: url({{ movie.poster }});">
 						<img
 						src="{{ asset('images/poster-placeholder.png') }}" class="img-fluid">
@@ -31,7 +31,7 @@
 						</p>
 						<p>{{ movie.summary }}</p>
 						<p>{{ movie.synopsis }}</p>
-												{{ include('main/_starsRating.html.twig') }}
+												{{ include('main/_starsRating.html.twig') }} #}
 
 
                          </div>
@@ -42,35 +42,7 @@
 							<i class="bi bi-star-half"></i> #}
 					
 						</div>
-                        {% if movie.type == 'Série' %}
-						<h2>3 Saisons</h2>
-						<ul class="list-unstyled">
-							<li>
-								<span class="badge bg-danger fs-6 mb-2">Saison 1</span>
-								<small class="ms-1">(10 épisodes)</small>
-							</li>
-							<li>
-								<span class="badge bg-danger fs-6 mb-2">Saison 2</span>
-								<small class="ms-1">(11 épisodes)</small>
-							</li>
-							<li>
-								<span class="badge bg-danger fs-6 mb-2">Saison 3</span>
-								<small class="ms-1">(12 épisodes)</small>
-							</li>
-						</ul>
-                        {% endif %}
-
-						<dl class="row">
-							<dt class="col-sm-12">Avec</dt>
-							<dd class="col-sm-12"> {{casting.person.firstname ~ ' ' ~  casting.person.lastname ~ ' dans le rôle de ' ~  casting.role}}
-						<br> 
-							</dd>
-							<dt class="col-sm-12">Pays</dt>
-							<dd class="col-sm-12">USA</dd>
-							<dt class="col-sm-12">Année</dt>
-							<dd class="col-sm-12">{{ movie.releaseDate|date('d-m-Y') }}</dd>
-						</dl>
-
+                      
 					</div>
 				</div>
 

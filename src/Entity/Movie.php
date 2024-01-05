@@ -46,10 +46,14 @@ class Movie
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class)]
     private Collection $castings;
 
+    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie')]
+    private Collection $genres;
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
         $this->castings = new ArrayCollection();
+        $this->genres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +212,33 @@ class Movie
             if ($casting->getMovie() === $this) {
                 $casting->setMovie(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+            $genre->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        if ($this->genres->removeElement($genre)) {
+            $genre->removeMovie($this);
         }
 
         return $this;
