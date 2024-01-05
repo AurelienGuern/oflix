@@ -43,9 +43,13 @@ class Movie
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true)]
     private Collection $seasons;
 
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class)]
+    private Collection $castings;
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
+        $this->castings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +177,36 @@ class Movie
             // set the owning side to null (unless already changed)
             if ($season->getMovie() === $this) {
                 $season->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Casting>
+     */
+    public function getCastings(): Collection
+    {
+        return $this->castings;
+    }
+
+    public function addCasting(Casting $casting): static
+    {
+        if (!$this->castings->contains($casting)) {
+            $this->castings->add($casting);
+            $casting->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCasting(Casting $casting): static
+    {
+        if ($this->castings->removeElement($casting)) {
+            // set the owning side to null (unless already changed)
+            if ($casting->getMovie() === $this) {
+                $casting->setMovie(null);
             }
         }
 
