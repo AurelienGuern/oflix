@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
-use App\Model\MovieModel;
+// use App\Model\MovieModel;
+
+use App\Entity\Movie;
+use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,18 +20,10 @@ class MainController extends AbstractController
      * @return Response 
      */
     #[Route('/', name: 'front_main_home')]
-    public function home(): Response
+    public function home(MovieRepository $movieRepository): Response
     {
-        // On doit récupérer la liste des films
-        $movies = MovieModel::getMovies();
-        // dd($movies);
-        // tri des $movies par ordre de sortie décroissant
-        // REFER : https://www.php.net/manual/fr/function.usort
-        uasort($movies, function ($movie1, $movie2) {
-            return $movie2['release_date'] - $movie1['release_date'];
-        });
         return $this->render('main/home.html.twig', [
-            'movies' => $movies,
+            'movies' => $movieRepository->findAll()
         ]);
     }
 
@@ -38,20 +33,12 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/movies', name: 'front_main_index')]
-    public function index(): Response
+    public function index(MovieRepository $movieRepository): Response
     {
         // On doit récupérer la liste des films
-        $movies = MovieModel::getMovies();
-        // dd($movies);
-        // tri des $movies par ordre de alphabétique
-        // REFER : https://www.php.net/manual/fr/function.usort
-        // REFER : https://www.php.net/manual/fr/function.strcasecmp.php
-        uasort($movies, function ($movie1, $movie2) {
-            return strcasecmp($movie1['title'], $movie2['title']);
-        });
-
+        
         return $this->render('main/home.html.twig', [
-            'movies' => $movies,
+            'movies' => $movieRepository->findAll(),
         ]);
     }
 
@@ -60,10 +47,10 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id<\d+>}', name: 'front_main_show')]
-    public function show(int $id): Response
+    public function show(Movie $movie): Response
     {
         // On doit récupérer le film avec $id
-        $movie = MovieModel::getMovieById($id);
+      
         if ($movie === null) {
             // REFER : https://symfony.com/doc/current/controller.html#managing-errors-and-404-pages
             // On met un flash message pour informer de l'erreur
@@ -77,6 +64,7 @@ class MainController extends AbstractController
 
         return $this->render('main/show.html.twig', [
             'movie' => $movie,
+            'casting' => $movie->getCastings()
         ]);
     }
     #[Route('/switch', name: 'front_main_switcher')]
