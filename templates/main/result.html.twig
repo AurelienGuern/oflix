@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de la recherche de : {{movieTitle}}{% endblock %}
+
+{% block body %}
+    <h1>Résultats de la recherche</h1>
+
+    {% if movies is not empty %}
+        <ul>
+            {% for movie in movies %}
+                <li>{{ movie.title }}</li>
+                <!-- Vous pouvez afficher d'autres détails du film ici -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun film trouvé pour cette recherche.</p>
+    {% endif %}
+{% endblock %}

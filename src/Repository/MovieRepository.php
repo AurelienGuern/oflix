@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Movie>
@@ -60,6 +61,19 @@ class MovieRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function searchMovie($title)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT m
+            FROM App\Entity\Movie m
+            WHERE m.title LIKE :title'
+        )->setParameter('title', '%' . $title . '%');
+    
+        return $query->getResult();
+    }
+    
 
 //    /**
 //     * @return Movie[] Returns an array of Movie objects

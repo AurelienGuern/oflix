@@ -65,6 +65,16 @@ $person = null;
             $manager->persist($post);
         }
 
+        for ($i = 1; $i < 25; $i++) {
+            $post = new Casting();
+            $post->setMovie($movie);
+            $post->setPerson($person);
+            $post->setRole($this->faker->word());
+            $post->setCreditOrder(rand(1, 10));
+           
+            $manager->persist($post);
+        }
+
     
         $manager->flush();
     }
