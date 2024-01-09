@@ -25,10 +25,10 @@
 			<div class="col-12 col-lg-3">
 				<h2 class="text-center text-muted fw-bold mb-4">Les genres</h2>
 				<ul class="d-flex flex-column flex-wrap list-unstyled justify-content-center">
-				{% for genre in genres %}
+				{# {% for genre in genres %}
 									<li class="btn btn-sm btn-outline-danger mx-1 mb-2"><a href="{{path('show_genre', {id: genre.id} )}}">{{genre.name}}</a></li>
 
-				{% endfor %}
+				{% endfor %} #}
 				</ul>
 			</div>
 
@@ -52,9 +52,7 @@
 						<!-- img src="{{ movie.poster }}" class="img-fluid" -->
 						</div>
 						<div class="col-8 p-4 d-flex flex-column position-static">
-							<a href="{{path('front_favorites_add', {id: movie.id}) }}" class="movie__favorite fs-1 my-2 mx-3 link-danger">
-								<i class="bi bi-bookmark-plus"></i>
-							</a>
+								{{ include('favorites/_bookmark.html.twig', {key: movie.id}) }}
 							<strong class="d-inline-block mb-2 text-primary">{{ movie.type }}</strong>
 							<h3 class="mb-1">{{ movie.title }}</h3>
 							<div class="mb-1 text-muted">{{ movie.duration }}

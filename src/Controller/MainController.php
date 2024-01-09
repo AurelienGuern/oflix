@@ -1,19 +1,15 @@
 <?php
+// Fichier : MainController.php | Date: 2024-01-01 | Auteur: Patrick SUFFREN
 
 namespace App\Controller;
 
-// use App\Model\MovieModel;
-
-use App\Entity\Casting;
-use App\Entity\Genre;
 use App\Entity\Movie;
-use App\Repository\GenreRepository;
+use App\Model\MovieModel;
 use App\Repository\MovieRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
@@ -23,12 +19,19 @@ class MainController extends AbstractController
      * @return Response 
      */
     #[Route('/', name: 'front_main_home')]
-    public function home(MovieRepository $movieRepository, GenreRepository $genreRepository): Response
+    public function home(MovieRepository $movieRepository): Response
     {
-    
+        // On doit récupérer la liste des films
+        // $movies = MovieModel::getMovies();
+        $movies = $movieRepository->findAll();
+        // dd($movies);
+        // tri des $movies par ordre de sortie décroissant
+        // REFER : https://www.php.net/manual/fr/function.usort
+        uasort($movies, function ($movie1, $movie2) {
+            return $movie2->getReleaseDate() < $movie1->getReleaseDate();
+        });
         return $this->render('main/home.html.twig', [
-            'movies' => $movieRepository->findAll(),
-            'genres' => $genreRepository->findAll()
+            'movies' => $movies,
         ]);
     }
 
@@ -38,13 +41,20 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/movies', name: 'front_main_index')]
-    public function index(MovieRepository $movieRepository, GenreRepository $genreRepository): Response
+    public function index(): Response
     {
         // On doit récupérer la liste des films
-        
+        $movies = MovieModel::getMovies();
+        // dd($movies);
+        // tri des $movies par ordre de alphabétique
+        // REFER : https://www.php.net/manual/fr/function.usort
+        // REFER : https://www.php.net/manual/fr/function.strcasecmp.php
+        uasort($movies, function ($movie1, $movie2) {
+            return strcasecmp($movie1['title'], $movie2['title']);
+        });
+
         return $this->render('main/home.html.twig', [
-            'movies' => $movieRepository->findAll(),
-            'genres' => $genreRepository->findAll()
+            'movies' => $movies,
         ]);
     }
 
@@ -53,27 +63,35 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id<\d+>}', name: 'front_main_show')]
-    public function show(Movie $movie, Genre $genre, Casting $casting): Response
+    public function show(Movie $movie = null): Response
     {
         // On doit récupérer le film avec $id
-      
+        // $movie = MovieModel::getMovieById($id);
         if ($movie === null) {
             // REFER : https://symfony.com/doc/current/controller.html#managing-errors-and-404-pages
-            // On met un flash message pour informer de l'erreur
+            // throw $this->createNotFoundException('Ce film n\'existe pas');
+            // le client demande dans ce cas (essai d'accès à un film inexistant) de renvoyer vers la home avec un message d'erreur
+            // REFER : https://symfony.com/doc/6.4/session.html#flash-messages
+            // on met en place un flas message pour informer l'utilisateur
             $this->addFlash(
-                'warning',
-                "Ce film n'existe pas dans la base. Voici les derniers films proposés"
+                'info',
+                'Ce film n\'existe pas dans la base, voici les derniers films proposés'
             );
 
+            // REFER : https://symfony.com/doc/current/controller.html#redirecting
             return $this->redirectToRoute('front_main_home');
         }
 
         return $this->render('main/show.html.twig', [
             'movie' => $movie,
-            'genre' => $genre,
-            'casting' => $casting
         ]);
     }
+
+    /**
+     * switcher le theme en utilisant la session
+     *
+     * @return Response
+     */
     #[Route('/switch', name: 'front_main_switcher')]
     // utilisation de l'injection de dépendance de Symfony
     // REFER : https://grafikart.fr/tutoriels/injection-571
@@ -86,34 +104,16 @@ class MainController extends AbstractController
         $theme = $session->get('theme');
 
         // et le permute dans l'autre thème netflix <-> allocine
-        if ($theme == 'allocine') {
+        if ($theme === 'allocine') {
             $session->set('theme', 'netflix');
         } else {
             $session->set('theme', 'allocine');
         }
 
-        $this->addFlash(
-            'success',
-            'votre thème a été changé !'
-        );
-        return $this->redirectToRoute(('front_main_home'));
-    }
+        $this->addFlash('success', 'Votre thème a bien été modifié !');
 
-    #[Route('/genres', name: 'app_genres')]
-    public function genres(GenreRepository $genreRepository): Response
-    {
-        return $this->render('genre/index.html.twig', [
-            'genres' => $genreRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/genre/{id}', name: 'show_genre')]
-    public function genre(GenreRepository $genreRepository, Genre $genre): Response
-    {
-    
-        return $this->render('genre/show.html.twig', [
-            'genre' => $genre,
-            'movies' => $genre->getMovie()
-        ]);
+        // redirection vers la home
+        // REFER : https://symfony.com/doc/current/controller.html#redirecting
+        return $this->redirectToRoute('front_main_home');
     }
 }
