@@ -21,35 +21,44 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findAllOrdreByTitleAscDql()
+    public function findAllOrderByTitleAscDql()
     {
         $entityManager = $this->getEntityManager();
 
-        $query =$entityManager->createQuery(
-            'SELECT movie
-            FROM App\Entity\Movie movie
-            ORDER BY movie.title ASC'
+        $query = $entityManager->createQuery(
+            'SELECT m
+                FROM App\Entity\Movie m
+                ORDER BY m.title ASC'
         );
 
+        // retourne un tableau d'objet
         return $query->getResult();
     }
 
-    public function findAllOrdreByTitleAscQB() :array
-    {
-       return $this->createQueryBuilder('movie')
-       -> orderBy('movie.title', 'ASC')
-       ->getQuery()
-       ->getResult();
-        
-    }
+    /**
+    * @return Movie[] Returns an array of Movie objects
+    */
+   public function findAllOrderByTitleAscQB(): array
+   {
+       return $this->createQueryBuilder('m')
+           ->orderBy('m.title', 'ASC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 
-    public function findAllOrdreByDateDescQB() :array
+    /**
+    * @return Movie[] Returns an array of Movie objects
+    */
+    public function findAllOrderByDateDescQB(int $offset = 0, int $limit = PHP_INT_MAX): array
     {
-       return $this->createQueryBuilder('movie')
-       -> orderBy('movie.releaseDate', 'DESC')
-       ->getQuery()
-       ->getResult();
-        
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.releaseDate ', 'DESC')
+            ->setMaxResults( $limit )
+            ->setFirstResult( $offset )
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
 //    /**

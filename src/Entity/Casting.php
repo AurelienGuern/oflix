@@ -22,7 +22,6 @@ class Casting
 
     #[ORM\ManyToOne(inversedBy: 'castings')]
     #[ORM\JoinColumn(nullable: false)]
-
     private ?Person $person = null;
 
     #[ORM\ManyToOne(inversedBy: 'castings')]

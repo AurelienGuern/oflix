@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Model\MovieModel;
+use App\Repository\CastingRepository;
 use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,15 +24,15 @@ class MainController extends AbstractController
     {
         // On doit récupérer la liste des films
         // $movies = MovieModel::getMovies();
-        $movies = $movieRepository->findAll();
+        // $movies = $movieRepository->findAll();
+        // utilisation d'une requete personnalisée
+        $movies = $movieRepository->findAllOrderByDateDescQB(5, 5);
         // dd($movies);
         // tri des $movies par ordre de sortie décroissant
         // REFER : https://www.php.net/manual/fr/function.usort
         // uasort($movies, function ($movie1, $movie2) {
-        //     return $movie2->getReleaseDate() < $movie1->getReleaseDate();
+        //     return $movie2->getReleaseDate() > $movie1->getReleaseDate();
         // });
-
-        $movies = $movieRepository->findAllOrdreByDateDescQB();
         return $this->render('main/home.html.twig', [
             'movies' => $movies,
         ]);
@@ -46,16 +47,18 @@ class MainController extends AbstractController
     public function index(MovieRepository $movieRepository): Response
     {
         // On doit récupérer la liste des films
-        // EN méthode de DQL
-        // $movies = $movieRepository->findAllOrdreByTitleAscDql();
-
-        // en query builder
-        $movies = $movieRepository->findAllOrdreByTitleAscQB();
+        // $movies = MovieModel::getMovies();
+        // utilisation d'une requête personnalisée
+        // $movies = $movieRepository->findAllOrderByTitleAscDql();
+        $movies = $movieRepository->findAllOrderByTitleAscQB();
         // dd($movies);
         // tri des $movies par ordre de alphabétique
         // REFER : https://www.php.net/manual/fr/function.usort
         // REFER : https://www.php.net/manual/fr/function.strcasecmp.php
-       
+        // uasort($movies, function ($movie1, $movie2) {
+        //     return strcasecmp($movie1['title'], $movie2['title']);
+        // });
+
         return $this->render('main/home.html.twig', [
             'movies' => $movies,
         ]);
@@ -66,7 +69,7 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/show/{id<\d+>}', name: 'front_main_show')]
-    public function show(Movie $movie = null): Response
+    public function show(Movie $movie = null, CastingRepository $castingRepository): Response
     {
         // On doit récupérer le film avec $id
         // $movie = MovieModel::getMovieById($id);
@@ -80,13 +83,14 @@ class MainController extends AbstractController
                 'info',
                 'Ce film n\'existe pas dans la base, voici les derniers films proposés'
             );
-
+            
             // REFER : https://symfony.com/doc/current/controller.html#redirecting
             return $this->redirectToRoute('front_main_home');
         }
+        $castings = $castingRepository->findCastingsForMovie($movie);
 
         return $this->render('main/show.html.twig', [
-            'movie' => $movie,
+            'movie'     => $movie,
         ]);
     }
 
