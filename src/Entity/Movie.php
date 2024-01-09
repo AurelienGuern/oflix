@@ -44,6 +44,8 @@ class Movie
     private Collection $seasons;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class)]
+    #[ORM\OrderBy(["creditOrder" => "ASC"])]
+
     private Collection $castings;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie')]

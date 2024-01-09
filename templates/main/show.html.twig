@@ -49,8 +49,8 @@
 							<dt class="col-sm-12">Avec</dt>
 							<dd class="col-sm-12">
 							{% for casting in movie.castings %}
-								{{casting.person.fullname}} ({{ casting.role}})<br>
-							
+								({{ casting.creditOrder }}). {{ casting.person.fullname }} ({{ casting.role }})<br>
+							{% endfor %}
 							</dd>
 							<dt class="col-sm-12">Pays</dt>
 							<dd class="col-sm-12">USA</dd>

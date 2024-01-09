@@ -3,11 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\CastingRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CastingRepository::class)]
-#[ORM\UniqueConstraint(fields: (['person', 'movie', 'role']))]
+#[ORM\UniqueConstraint(fields: ['person', 'movie', 'role'])]
 class Casting
 {
     #[ORM\Id]
@@ -18,15 +17,17 @@ class Casting
     #[ORM\Column(length: 255)]
     private ?string $role = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $credit_order = null;
+    #[ORM\Column]
+    private ?int $creditOrder = null;
+
+    #[ORM\ManyToOne(inversedBy: 'castings')]
+    #[ORM\JoinColumn(nullable: false)]
+
+    private ?Person $person = null;
 
     #[ORM\ManyToOne(inversedBy: 'castings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Movie $movie = null;
-
-    #[ORM\ManyToOne(inversedBy: 'castings')]
-    private ?Person $person = null;
 
     public function getId(): ?int
     {
@@ -47,24 +48,12 @@ class Casting
 
     public function getCreditOrder(): ?int
     {
-        return $this->credit_order;
+        return $this->creditOrder;
     }
 
-    public function setCreditOrder(int $credit_order): static
+    public function setCreditOrder(int $creditOrder): static
     {
-        $this->credit_order = $credit_order;
-
-        return $this;
-    }
-
-    public function getMovie(): ?Movie
-    {
-        return $this->movie;
-    }
-
-    public function setMovie(?Movie $movie): static
-    {
-        $this->movie = $movie;
+        $this->creditOrder = $creditOrder;
 
         return $this;
     }
@@ -77,6 +66,18 @@ class Casting
     public function setPerson(?Person $person): static
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    public function getMovie(): ?Movie
+    {
+        return $this->movie;
+    }
+
+    public function setMovie(?Movie $movie): static
+    {
+        $this->movie = $movie;
 
         return $this;
     }

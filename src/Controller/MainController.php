@@ -41,18 +41,15 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/movies', name: 'front_main_index')]
-    public function index(): Response
+    public function index(MovieRepository $movieRepository): Response
     {
         // On doit récupérer la liste des films
-        $movies = MovieModel::getMovies();
+        $movies = $movieRepository->findAllOrdreByTitleAscDql();
         // dd($movies);
         // tri des $movies par ordre de alphabétique
         // REFER : https://www.php.net/manual/fr/function.usort
         // REFER : https://www.php.net/manual/fr/function.strcasecmp.php
-        uasort($movies, function ($movie1, $movie2) {
-            return strcasecmp($movie1['title'], $movie2['title']);
-        });
-
+       
         return $this->render('main/home.html.twig', [
             'movies' => $movies,
         ]);
