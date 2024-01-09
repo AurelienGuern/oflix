@@ -30,21 +30,21 @@ $person = null;
         // création de 20 acteurs
         for ($i = 1; $i < 21; $i++) {
             $person = new Person();
-            $person->setFirstname($this->faker->actor());
-            $person->setLastname(' ');
+            $person->setFirstname($this->faker->name());
+            $person->setLastname($this->faker->name());
             $manager->persist($person);
         }
 
         for ($i = 1; $i < 21; $i++) {
             $genre = new Genre();
-            $genre->setName($this->faker->movieGenre());
+            $genre->setName($this->faker->word());
             $manager->persist($genre);
         }
 
         // création de 40 movie
         for ($i = 1; $i < 41; $i++) {
             $movie = new Movie();
-            $movie->setTitle($this->faker->movie());
+            $movie->setTitle($this->faker->sentence());
             $movie->setType(rand(0, 1) ? 'Movie' : 'Série');
             $movie->setSummary($this->faker->sentence(4));
             $movie->setSynopsis($this->faker->sentence(2));
