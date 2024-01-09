@@ -30,8 +30,26 @@ class MovieRepository extends ServiceEntityRepository
             FROM App\Entity\Movie movie
             ORDER BY movie.title ASC'
         );
-        
+
         return $query->getResult();
+    }
+
+    public function findAllOrdreByTitleAscQB() :array
+    {
+       return $this->createQueryBuilder('movie')
+       -> orderBy('movie.title', 'ASC')
+       ->getQuery()
+       ->getResult();
+        
+    }
+
+    public function findAllOrdreByDateDescQB() :array
+    {
+       return $this->createQueryBuilder('movie')
+       -> orderBy('movie.releaseDate', 'DESC')
+       ->getQuery()
+       ->getResult();
+        
     }
 
 //    /**

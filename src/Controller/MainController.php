@@ -27,9 +27,11 @@ class MainController extends AbstractController
         // dd($movies);
         // tri des $movies par ordre de sortie décroissant
         // REFER : https://www.php.net/manual/fr/function.usort
-        uasort($movies, function ($movie1, $movie2) {
-            return $movie2->getReleaseDate() < $movie1->getReleaseDate();
-        });
+        // uasort($movies, function ($movie1, $movie2) {
+        //     return $movie2->getReleaseDate() < $movie1->getReleaseDate();
+        // });
+
+        $movies = $movieRepository->findAllOrdreByDateDescQB();
         return $this->render('main/home.html.twig', [
             'movies' => $movies,
         ]);
@@ -44,7 +46,11 @@ class MainController extends AbstractController
     public function index(MovieRepository $movieRepository): Response
     {
         // On doit récupérer la liste des films
-        $movies = $movieRepository->findAllOrdreByTitleAscDql();
+        // EN méthode de DQL
+        // $movies = $movieRepository->findAllOrdreByTitleAscDql();
+
+        // en query builder
+        $movies = $movieRepository->findAllOrdreByTitleAscQB();
         // dd($movies);
         // tri des $movies par ordre de alphabétique
         // REFER : https://www.php.net/manual/fr/function.usort
