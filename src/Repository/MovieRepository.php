@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Movie>
@@ -39,13 +38,17 @@ class MovieRepository extends ServiceEntityRepository
     /**
     * @return Movie[] Returns an array of Movie objects
     */
-   public function findAllOrderByTitleAscQB(): array
+   public function findAllOrderByTitleAscQB(string $search = null): array
    {
-       return $this->createQueryBuilder('m')
-           ->orderBy('m.title', 'ASC')
-           ->getQuery()
-           ->getResult()
-       ;
+       $qb = $this->createQueryBuilder('m')
+           ->orderBy('m.title', 'ASC');
+
+        if ($search) {
+            $qb->andWhere('m.title LIKE :param')
+                ->setParameter('param', '%' . $search . '%');
+        }
+
+       return $qb->getQuery()->getResult();
    }
 
     /**
@@ -61,19 +64,6 @@ class MovieRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
-    public function searchMovie($title)
-    {
-        $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery(
-            'SELECT m
-            FROM App\Entity\Movie m
-            WHERE m.title LIKE :title'
-        )->setParameter('title', '%' . $title . '%');
-    
-        return $query->getResult();
-    }
-    
 
 //    /**
 //     * @return Movie[] Returns an array of Movie objects

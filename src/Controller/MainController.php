@@ -48,20 +48,18 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route('/movies', name: 'front_main_index')]
-    public function index(MovieRepository $movieRepository, GenreRepository $genreRepository): Response
+    #[Route('/search', name: 'front_main_search')]
+    public function index(MovieRepository $movieRepository, GenreRepository $genreRepository, Request $request): Response
     {
-        // On doit récupérer la liste des films
-        // $movies = MovieModel::getMovies();
-        // utilisation d'une requête personnalisée
-        // $movies = $movieRepository->findAllOrderByTitleAscDql();
-        $movies = $movieRepository->findAllOrderByTitleAscQB();
-        // dd($movies);
-        // tri des $movies par ordre de alphabétique
-        // REFER : https://www.php.net/manual/fr/function.usort
-        // REFER : https://www.php.net/manual/fr/function.strcasecmp.php
-        // uasort($movies, function ($movie1, $movie2) {
-        //     return strcasecmp($movie1['title'], $movie2['title']);
-        // });
+            // Récupération d'un éventuel critère de recherche
+            $search = $request->query->get('search');
+    
+            // On doit récupérer la liste des films
+            // $movies = MovieModel::getMovies();
+            // utilisation d'une requête personnalisée
+            // $movies = $movieRepository->findAllOrderByTitleAscDql();
+            $movies = $movieRepository->findAllOrderByTitleAscQB($search);
+        
 
         return $this->render('main/home.html.twig', [
             'movies' => $movies,
@@ -151,17 +149,17 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/search/{movie}', name: 'show_result')]
-    public function search(MovieRepository $movieRepository, Request $request, GenreRepository $genreRepository): Response
-    {
-        $movieTitle = $request->attributes->get('movie'); // Récupère la valeur de {movie} dans l'URL
+    // #[Route('/search/{movie}', name: 'show_result')]
+    // public function search(MovieRepository $movieRepository, Request $request, GenreRepository $genreRepository): Response
+    // {
+    //     $movieTitle = $request->attributes->get('movie'); // Récupère la valeur de {movie} dans l'URL
 
-        $movies = $movieRepository->searchMovie($movieTitle); // Appel de votre méthode de recherche avec le titre du film
+    //     $movies = $movieRepository->searchMovie($movieTitle); // Appel de votre méthode de recherche avec le titre du film
 
-        return $this->render('genre/show.html.twig', [
-            'movies' => $movies,
-            "movieTitle" => $movieTitle,
-            'genres' => $genreRepository->findAll()
-        ]);
-    }
+    //     return $this->render('genre/show.html.twig', [
+    //         'movies' => $movies,
+    //         "movieTitle" => $movieTitle,
+    //         'genres' => $genreRepository->findAll()
+    //     ]);
+    // }
 }

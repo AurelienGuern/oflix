@@ -22,8 +22,29 @@
 		<!-- favicon -->
 		{% endblock %}
 
-		{% block javascripts %}{% endblock %}
+{% block javascripts %}
+		<script>
+		// Afficher ou masquer le bouton en fonction du défilement
+		window.onscroll = function() {
+			scrollFunction();
+		};
 
+		function scrollFunction() {
+			if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+				document.getElementById("myBtn").style.display = "block";
+			} else {
+				document.getElementById("myBtn").style.display = "none";
+			}
+		}
+
+		// Remonter en haut lorsque le bouton est cliqué
+		function topFunction() {
+			document.body.scrollTop = 0; // Pour les navigateurs Safari
+			document.documentElement.scrollTop = 0; // Pour les autres navigateurs
+		}
+
+		</script>
+		{% endblock %}
 		<title>O'flix</title>
 	</head>
 
@@ -86,7 +107,7 @@
 
 					<button type="button" class="btn btn-danger me-2">Connexion</button>
 
-					<form class="d-flex" action="list.html">
+					<form class="d-flex" action="{{ path('front_main_search') }}">
 						<input class="form-control form-control-sm me-2" name="search" type="search" placeholder="Rechercher...">
 						<button class="btn btn-outline-danger" type="submit">
 							<i class="bi bi-search"></i>
