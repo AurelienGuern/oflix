@@ -106,12 +106,16 @@ class MainController extends AbstractController
     public function review(Movie $movie = null, Request $request): Response
     {
         $review = new Review();
+        
+        
         $form = $this->createForm(ReviewType::class, $review);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $review = $form->getData();
-            dd($review);
+            return $this->render('main/show.html.twig', [
+                'movie'     => $movie]);
+   
         }
 
 

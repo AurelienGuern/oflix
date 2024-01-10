@@ -29,7 +29,7 @@ class ReviewType extends AbstractType
                     'TOP TOP' => 4,
                     'INCR' => 5,
                 ],
-                'multiple' => true,
+                'multiple' => false,
                 'expanded' => true,
             ])
             ->add('reactions', ChoiceType::class, [
@@ -40,7 +40,7 @@ class ReviewType extends AbstractType
                     'Dormir' => 4,
                     'Rêver' => 5,
                 ],
-                'multiple' => false,
+                'multiple' => true,
                 'expanded' => true,
             ])
             ->add('watchedAt')
@@ -60,3 +60,4 @@ class ReviewType extends AbstractType
         ]);
     }
 }
+

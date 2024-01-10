@@ -24,26 +24,27 @@ class Review
     #[Assert\Email()]
     private ?string $email = null;
 
-    
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: 'text')]
     #[Assert\Length(min: 2, max: 5000)]
     private ?string $content = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'float')]
     #[Assert\Positive]
     private ?float $rating = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $reactions = [];
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $reactions = null;
 
-    #[ORM\Column]
-    #[Assert\DateTime]
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $watchedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Movie $movie = null;
 
-    public function getId(): ?int
+
+
+    public function getId()
     {
         return $this->id;
     }
@@ -96,12 +97,12 @@ class Review
         return $this;
     }
 
-    public function getReactions(): array
+    public function getReactions(): ?array
     {
         return $this->reactions;
     }
 
-    public function setReactions(array $reactions): static
+    public function setReactions(?array $reactions): static
     {
         $this->reactions = $reactions;
 
@@ -113,7 +114,7 @@ class Review
         return $this->watchedAt;
     }
 
-    public function setWatchedAt(\DateTimeImmutable $watchedAt): static
+    public function setWatchedAt(?\DateTimeImmutable $watchedAt): static
     {
         $this->watchedAt = $watchedAt;
 
@@ -131,4 +132,5 @@ class Review
 
         return $this;
     }
+    
 }

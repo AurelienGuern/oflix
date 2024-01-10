@@ -54,6 +54,7 @@ class Movie
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]
     private Collection $reviews;
 
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
@@ -253,6 +254,10 @@ class Movie
     /**
      * @return Collection<int, Review>
      */
+
+    /**
+     * @return Collection<int, Review>
+     */
     public function getReviews(): Collection
     {
         return $this->reviews;
@@ -279,4 +284,5 @@ class Movie
 
         return $this;
     }
+  
 }
