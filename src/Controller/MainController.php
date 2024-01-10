@@ -99,6 +99,16 @@ class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/review/{id<\d+>}', name: 'front_main_review')]
+    public function review(Movie $movie = null): Response
+    {
+       
+        return $this->render('main/review.html.twig', [
+            'movie'     => $movie
+
+        ]);
+    }
+
     /**
      * switcher le theme en utilisant la session
      *
@@ -128,6 +138,14 @@ class MainController extends AbstractController
         // REFER : https://symfony.com/doc/current/controller.html#redirecting
         return $this->redirectToRoute('front_main_home');
     }
+
+
+
+
+
+
+
+
 
 
     #[Route('/genres', name: 'app_genres')]
