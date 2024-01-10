@@ -91,8 +91,7 @@ class MainController extends AbstractController
             // REFER : https://symfony.com/doc/current/controller.html#redirecting
             return $this->redirectToRoute('front_main_home');
         }
-        $castings = $castingRepository->findCastingsForMovie($movie);
-
+    
         return $this->render('main/show.html.twig', [
             'movie'     => $movie,
             'genres' => $genreRepository->findAll()

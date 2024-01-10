@@ -51,11 +51,15 @@ class Movie
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie')]
     private Collection $genres;
 
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
         $this->castings = new ArrayCollection();
         $this->genres = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -241,6 +245,36 @@ class Movie
     {
         if ($this->genres->removeElement($genre)) {
             $genre->removeMovie($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getMovie() === $this) {
+                $review->setMovie(null);
+            }
         }
 
         return $this;
