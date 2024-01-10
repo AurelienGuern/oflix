@@ -5,6 +5,8 @@ namespace App\Controller;
 
 use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Entity\Review;
+use App\Form\ReviewType;
 use App\Model\MovieModel;
 use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
@@ -14,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 
 class MainController extends AbstractController
 {
@@ -100,11 +103,21 @@ class MainController extends AbstractController
     }
 
     #[Route('/review/{id<\d+>}', name: 'front_main_review')]
-    public function review(Movie $movie = null): Response
+    public function review(Movie $movie = null, Request $request): Response
     {
-       
+        $review = new Review();
+        $form = $this->createForm(ReviewType::class, $review);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $review = $form->getData();
+            dd($review);
+        }
+
+
         return $this->render('main/review.html.twig', [
-            'movie'     => $movie
+            'movie'     => $movie,
+            'form' => $form->createView()
 
         ]);
     }

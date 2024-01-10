@@ -1,1 +1,11 @@
-<h2> CRITIQUE </h2>
+{% extends 'base.html.twig' %}
+{% block title %}Critique de : {{movie.title}}
+{% endblock %}
+
+
+{% block body %}
+   
+{{ form_start(form) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+{% endblock %}
