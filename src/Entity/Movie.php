@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -21,6 +22,11 @@ class Movie
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(
+        min: 5,
+        max: 255,
+        notInRangeMessage: 'Durée au minimum de {{ min }}  et de {{ max }} maximum',
+    )]
     private ?int $duration = null;
 
     #[Assert\NotBlank()]
@@ -28,20 +34,39 @@ class Movie
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Url]
     private ?string $poster = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1, nullable: true)]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: 'Note mini de {{ min }}  et {{ max }} au max',
+    )]
     private ?string $rating = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\Type(type: ['Film', 'Série'])]
+    #[Assert\NotBlank()] 
+    #[Assert\Choice(['Film', 'Série'])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le résumé doit faire au moins {{ limit }} caractères',
+        maxMessage: 'Le résumé doit faire  moins de {{ limit }} caractères',
+    )]
     private ?string $Summary = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le synopsis doit faire au moins {{ limit }} caractères',
+        maxMessage: 'Le synopsis doit faire  moins de {{ limit }} caractères',
+    )]
     private ?string $Synopsis = null;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true)]
@@ -53,6 +78,10 @@ class Movie
     private Collection $castings;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie')]
+    #[Assert\Count(
+        min: 1,
+        max: 4
+    )]
     private Collection $genres;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]

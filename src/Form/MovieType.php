@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
@@ -30,7 +31,14 @@ class MovieType extends AbstractType
             ->add('summary')
             ->add('synopsis')
             ->add('poster')
-            ->add('type')
+            ->add('type', ChoiceType::class, [
+                'choices'  => [
+                    'Film'         => 'Film',
+                    'Série'          => 'Série',
+                  
+                ],
+                'label' => "Type ",
+            ])
             ->add('genres', EntityType::class, [
                 'class'         => Genre::class,
                 'choice_label'  => 'name',

@@ -31,3 +31,15 @@ html {
     top: 0;
     right: 0;
 }
+
+
+/* Back Office */
+
+.text-truncate {
+    max-width: 150px;
+}
+
+.poster-thumbnail {
+    height: 50px;
+    width: 100px;
+}
