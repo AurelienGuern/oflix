@@ -1,3 +1,4 @@
+{# Fichier : home.html.twig | Date: 2024-01-01 | Auteur: Patrick SUFFREN #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des films
@@ -25,10 +26,22 @@
 			<div class="col-12 col-lg-3">
 				<h2 class="text-center text-muted fw-bold mb-4">Les genres</h2>
 				<ul class="d-flex flex-column flex-wrap list-unstyled justify-content-center">
-				{% for genre in genres %}
-									<li class="btn btn-sm btn-outline-danger mx-1 mb-2"><a href="{{path('show_genre', {id: genre.id} )}}">{{genre.name}}</a></li>
-
-				{% endfor %}
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Action</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Animation</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Aventure</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Comédie</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Dessin animé</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Documentaire</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Drame</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Espionnage</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Famille</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Fantastique</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Historique</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Policier</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Romance</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Science-fiction</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Thriller</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Western</li>
 				</ul>
 			</div>
 
@@ -36,7 +49,9 @@
 
                 {% if (app.current_route == 'front_main_home') %}
                     <h2 class="text-muted fw-bold mb-4">Les nouveautés</h2>
-                {% else %}
+                {% elseif (app.current_route == 'front_main_search') %}
+					<h2 class="text-muted fw-bold mb-4">Résultat de la recherche</h2>
+				{% else %}
                     <h2 class="text-muted fw-bold mb-4">Les films et séries</h2>
                 {% endif %}
 
@@ -44,7 +59,7 @@
 				{# insère le dump de la variable dans la profile bar #}
 				{# {{ dump(movies) }} on insére le dump à l'intérieur de la page #}
 				{# REFER : https://twig.symfony.com/doc/3.x/ #}
-					{% for key, movie in movies %}
+					{% for movie in movies %}
 
 						<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm bg-white position-relative"> <div class="col-4 movie__poster" style="background-image: url({{ movie.poster }});">
 							<img
@@ -52,7 +67,7 @@
 						<!-- img src="{{ movie.poster }}" class="img-fluid" -->
 						</div>
 						<div class="col-8 p-4 d-flex flex-column position-static">
-								{{ include('favorites/_bookmark.html.twig', {key: movie.id}) }}
+							{{ include('favorites/_bookmark.html.twig', {key: movie.id}) }}
 							<strong class="d-inline-block mb-2 text-primary">{{ movie.type }}</strong>
 							<h3 class="mb-1">{{ movie.title }}</h3>
 							<div class="mb-1 text-muted">{{ movie.duration }}
@@ -60,8 +75,8 @@
 							<p>
 								<small>{{ movie.summary }}</small>
 							</p>
-													{{ include('main/_starsRating.html.twig') }}
-
+							{{ include('main/_starsRating.html.twig', {'stars': movie.rating}) }}
+							{# REFER : https://symfony.com/doc/6.4/templates.html#linking-to-pages #}
 							<a href="{{ path('front_main_show', {id: movie.id}) }}" class="fs-1 mt-3 text-danger align-self-start">
 								<i class="bi bi-arrow-right-square"></i>
 							</a>

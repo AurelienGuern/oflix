@@ -31,26 +31,31 @@
 						<p>{{ movie.summary }}</p>
 						<p>{{ movie.synopsis }}</p>
 
-						{{ include('main/_starsRating.html.twig') }}
+						{{ include('main/_starsRating.html.twig', {'stars': movie.rating})}}
 
 						{% if movie.type == 'Série' %}
-							<h2>{{ movie.seasons|length }} Saisons</h2>
+							<h2>{{ movie.seasons|length }}
+								Saisons</h2>
 							{% for season in movie.seasons %}
-							<ul class="list-unstyled">
-								<li>
-									<span class="badge bg-danger fs-6 mb-2">Saison {{ season.number }}</span>
-									<small class="ms-1">({{ season.episodeNumber }} épisodes)</small>
-								</li>
-							</ul>
+								<ul class="list-unstyled">
+									<li>
+										<span class="badge bg-danger fs-6 mb-2">Saison
+											{{ season.number }}</span>
+										<small class="ms-1">({{ season.episodeNumber }}
+											épisodes)</small>‡
+									</li>
+								</ul>
 							{% endfor %}
 						{% endif %}
 
 						<dl class="row">
 							<dt class="col-sm-12">Avec</dt>
 							<dd class="col-sm-12">
-							{% for casting in movie.castings %}
-								({{ casting.creditOrder }}). {{ casting.person.fullname }} ({{ casting.role }})<br>
-							{% endfor %}
+								{% for casting in movie.castings %}
+									({{ casting.creditOrder }}).
+									{{ casting.person.fullname }}
+									({{ casting.role }})<br>
+								{% endfor %}
 							</dd>
 							<dt class="col-sm-12">Pays</dt>
 							<dd class="col-sm-12">USA</dd>
@@ -58,6 +63,38 @@
 							<dd class="col-sm-12">{{ movie.releaseDate|date('d-m-Y') }}</dd>
 						</dl>
 						<a href="{{ path('front_review_new', {id: movie.id}) }}" class="btn btn-warning">Ajouter une critique</a>
+
+						{# Affichage des critiques #}
+						{% for review in movie.reviews %}
+							<div class="card border-warning mb3">
+								{{ include('main/_starsRating.html.twig', {'stars': review.rating}) }}
+								<div class="card-body">
+									<p class="card-text mb-4">
+										{{ review.content }}
+									</p>
+									<span>
+										<i>Réactions :</i>
+									</span>
+									{% for reaction in review.reactions %}
+										<span class="pd-6">
+											<i>{{ reaction }}</i>
+										</span>
+									{% endfor %}
+
+									<blockquote class="blockquote mt-5">
+										<footer class="blockquote-footer">
+											par
+											{{ review.username }}
+											le
+											<cite>
+												{{ review.watchedAt|date('d-m-Y') }}</cite>
+										</footer>
+									</blockquote>
+								</div>
+							</div>
+						{% else %}
+							<p>Pas de critiques sur ce film pour l'instant, ajoutez en une !</p>
+						{% endfor %}
 					</div>
 				</div>
 

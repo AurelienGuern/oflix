@@ -17,6 +17,7 @@ class ReviewController extends AbstractController
     public function new(Movie $movie, Request $request, EntityManagerInterface $entityManager): Response
     {
         $review = new Review;
+        $review->setWatchedAt(new \DateTimeImmutable);
         $form = $this->createForm(ReviewType::class, $review);
 
         $form->handleRequest($request);
@@ -25,6 +26,12 @@ class ReviewController extends AbstractController
 
             $entityManager->persist($review);
             $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'La critique a été ajoutée au film.'
+            );
+
 
             return $this->redirectToRoute('front_main_show', ['id' => $movie->getId()]);
         }
