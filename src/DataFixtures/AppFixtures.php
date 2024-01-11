@@ -54,15 +54,12 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 50; $i++) {
             $movie = new Movie;
             // si un movie est une série alors il y a des saison
-            if ($faker->boolean()) 
-            {
+            if ($faker->boolean()) {
                 // c'est un film
                 $movie->setTitle($faker->unique()->movie());
                 $movie->setType('Film');
                 $movie->setDuration(random_int(80, 330));
-            }
-            else
-            {
+            } else {
                 // c'est une série
                 $movie->setTitle($faker->unique()->tvShow());
                 $movie->setType('Série');
@@ -81,10 +78,10 @@ class AppFixtures extends Fixture
             $movie->setSummary($faker->realText(60));
             $movie->setSynopsis($faker->sentence(4));
             $movie->setPoster($faker->imageUrl(200, 300, true));
-            $movie->setRating(rand(1, 50) /50);
+            $movie->setRating(null);
 
             // on associe entre 0 et 4 genres à un movie
-            for ($j=0; $j < random_int(0, 5); $j++) { 
+            for ($j = 0; $j < random_int(0, 5); $j++) {
                 $movie->addGenre($faker->unique()->randomElement($this->genres));
             }
 
@@ -98,7 +95,7 @@ class AppFixtures extends Fixture
                     $casting = new Casting;
                     $casting->setMovie($movie);
                     $casting->setPerson($this->persons[random_int(0, count($this->persons) - 1)]);
-                    $casting->setCreditOrder($order+1);
+                    $casting->setCreditOrder($order + 1);
                     $casting->setRole($faker->character());
                     $manager->persist($casting);
                 }

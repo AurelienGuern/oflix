@@ -28,7 +28,7 @@ class Movie
     #[ORM\Column(length: 255)]
     private ?string $poster = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1, nullable: true)]
     private ?string $rating = null;
 
     #[ORM\Column(length: 30)]
