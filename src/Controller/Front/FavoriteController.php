@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Controller;
-
+namespace App\Controller\Front;
 use App\Model\MovieModel;
 use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +25,7 @@ class FavoriteController extends AbstractController
             return in_array($movie->getId(), $favoriteMoviesIds);
         });
     
-        return $this->render('favorites/index.html.twig', [
+        return $this->render('front/favorites/index.html.twig', [
             'movies' => $favoriteMovies,
         ]);
     }

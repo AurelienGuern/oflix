@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Front;
 
 use App\Entity\Movie;
 use App\Entity\Review;
@@ -46,7 +46,7 @@ class ReviewController extends AbstractController
             return $this->redirectToRoute('front_main_show', ['id' => $movie->getId()]);
         }
 
-        return $this->render('review/new.html.twig', [
+        return $this->render('front/review/new.html.twig', [
             'movie' => $movie,
             'form'  => $form,
         ]);

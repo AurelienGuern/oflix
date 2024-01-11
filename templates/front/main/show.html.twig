@@ -18,7 +18,7 @@
 					</div>
 
 					<div class="col-8 p-4 d-flex flex-column position-static bg-light">
-						{{ include('favorites/_bookmark.html.twig', {key: movie.id}) }}
+						{{ include('front/favorites/_bookmark.html.twig', {key: movie.id}) }}
 						<strong class="d-inline-block mb-2 text-primary">{{ movie.type }}</strong>
 						<h3 class="mb-1">{{ movie.title }}</h3>
 						<div class="mb-1 text-muted">{{ movie.duration }}
@@ -31,7 +31,7 @@
 						<p>{{ movie.summary }}</p>
 						<p>{{ movie.synopsis }}</p>
 
-						{{ include('main/_starsRating.html.twig', {'stars': movie.rating})}}
+						{{ include('front/main/_starsRating.html.twig', {'stars': movie.rating})}}
 
 						{% if movie.type == 'Série' %}
 							<h2>{{ movie.seasons|length }}
@@ -67,7 +67,7 @@
 						{# Affichage des critiques #}
 						{% for review in movie.reviews %}
 							<div class="card border-warning mb3">
-								{{ include('main/_starsRating.html.twig', {'stars': review.rating}) }}
+								{{ include('front/main/_starsRating.html.twig', {'stars': review.rating}) }}
 								<div class="card-body">
 									<p class="card-text mb-4">
 										{{ review.content }}

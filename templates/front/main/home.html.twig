@@ -67,7 +67,7 @@
 						<!-- img src="{{ movie.poster }}" class="img-fluid" -->
 						</div>
 						<div class="col-8 p-4 d-flex flex-column position-static">
-							{{ include('favorites/_bookmark.html.twig', {key: movie.id}) }}
+							{{ include('front/favorites/_bookmark.html.twig', {key: movie.id}) }}
 							<strong class="d-inline-block mb-2 text-primary">{{ movie.type }}</strong>
 							<h3 class="mb-1">{{ movie.title }}</h3>
 							<div class="mb-1 text-muted">{{ movie.duration }}
@@ -75,7 +75,7 @@
 							<p>
 								<small>{{ movie.summary }}</small>
 							</p>
-							{{ include('main/_starsRating.html.twig', {'stars': movie.rating}) }}
+							{{ include('front/main/_starsRating.html.twig', {'stars': movie.rating}) }}
 							{# REFER : https://symfony.com/doc/6.4/templates.html#linking-to-pages #}
 							<a href="{{ path('front_main_show', {id: movie.id}) }}" class="fs-1 mt-3 text-danger align-self-start">
 								<i class="bi bi-arrow-right-square"></i>

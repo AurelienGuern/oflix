@@ -1,8 +1,7 @@
 <?php
 // Fichier : MainController.php | Date: 2024-01-01 | Auteur: Patrick SUFFREN
 
-namespace App\Controller;
-
+namespace App\Controller\Front;
 use App\Entity\Genre;
 use App\Entity\Movie;
 use App\Entity\Review;
@@ -39,7 +38,7 @@ class MainController extends AbstractController
         // uasort($movies, function ($movie1, $movie2) {
         //     return $movie2->getReleaseDate() > $movie1->getReleaseDate();
         // });
-        return $this->render('main/home.html.twig', [
+        return $this->render('front/main/home.html.twig', [
             'movies' => $movies,
             'genres' => $genreRepository->findAll()
         ]);
@@ -64,7 +63,7 @@ class MainController extends AbstractController
             $movies = $movieRepository->findAllOrderByTitleAscQB($search);
         
 
-        return $this->render('main/home.html.twig', [
+        return $this->render('front/main/home.html.twig', [
             'movies' => $movies,
             'genres' => $genreRepository->findAll()
 
@@ -95,7 +94,7 @@ class MainController extends AbstractController
             return $this->redirectToRoute('front_main_home');
         }
     
-        return $this->render('main/show.html.twig', [
+        return $this->render('front/main/show.html.twig', [
             'movie'     => $movie,
             'genres' => $genreRepository->findAll()
 
@@ -145,7 +144,7 @@ class MainController extends AbstractController
     #[Route('/genres', name: 'app_genres')]
     public function genres(GenreRepository $genreRepository): Response
     {
-        return $this->render('genre/index.html.twig', [
+        return $this->render('front/genre/index.html.twig', [
             'genres' => $genreRepository->findAll(),
         ]);
     }
@@ -154,7 +153,7 @@ class MainController extends AbstractController
     public function genre(GenreRepository $genreRepository, Genre $genre): Response
     {
 
-        return $this->render('genre/show.html.twig', [
+        return $this->render('front/genre/show.html.twig', [
             'genre' => $genre,
             'movies' => $genre->getMovie()
         ]);
