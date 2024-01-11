@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -22,6 +23,7 @@ class Movie
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $duration = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -32,9 +34,11 @@ class Movie
     private ?string $rating = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Type(type: ['Film', 'Série'])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
     private ?string $Summary = null;
 
     #[ORM\Column(length: 255)]

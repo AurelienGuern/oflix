@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/back/movie')]
 class MovieController extends AbstractController
 {
-    #[Route('/{id<\d+>}', name: 'app_back_movie_index', methods: ['GET'])]
+    #[Route('/', name: 'app_back_movie_index', methods: ['GET'])]
     public function index(MovieRepository $movieRepository): Response
     {
         return $this->render('back/movie/index.html.twig', [
@@ -42,7 +42,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id<\d+>}}', name: 'app_back_movie_show', methods: ['GET'])]
+    #[Route('/{id<\d+>}', name: 'app_back_movie_show', methods: ['GET'])]
     public function show(Movie $movie): Response
     {
         return $this->render('back/movie/show.html.twig', [
@@ -50,7 +50,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id<\d+>}}/edit', name: 'app_back_movie_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id<\d+>}/edit', name: 'app_back_movie_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MovieType::class, $movie);
@@ -68,7 +68,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id<\d+>}}', name: 'app_back_movie_delete', methods: ['POST'])]
+    #[Route('/{id<\d+>}', name: 'app_back_movie_delete', methods: ['POST'])]
     public function delete(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
