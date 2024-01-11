@@ -1,22 +1,21 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/layout_back.html.twig' %}
 
-{% block title %}Movie index{% endblock %}
+{% block title %}Liste des films{% endblock %}
 
 {% block body %}
-    <h1>Movie index</h1>
+    <h1>Liste des films et séries</h1>
 
+    <a href="{{ path('app_back_movie_new') }}" class="btn btn-success">Nouveau film</a>
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>ReleaseDate</th>
-                <th>Duration</th>
-                <th>Title</th>
-                <th>Poster</th>
-                <th>Rating</th>
+                <th>Titre</th>
+                <th>Date de sortie</th>
+                <th>Durée</th>
+                <th class="text-center">Affiche</th>
+                <th>Note</th>
                 <th>Type</th>
-                <th>Summary</th>
-                <th>Synopsis</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,26 +23,23 @@
         {% for movie in movies %}
             <tr>
                 <td>{{ movie.id }}</td>
-                <td>{{ movie.releaseDate ? movie.releaseDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ movie.duration }}</td>
-                <td>{{ movie.title }}</td>
-                <td>{{ movie.poster }}</td>
+                <td class="text-truncate">{{ movie.title }}</td>
+                <td>{{ movie.releaseDate ? movie.releaseDate|date('Y-m-d') : '' }}</td>
+                <td class="text-end">{{ movie.duration }} min</td>
+                <td class="text-center"><img src="{{ movie.poster }}" alt="{{ movie.title }}" class="poster-thumbnail"></td>
                 <td>{{ movie.rating }}</td>
                 <td>{{ movie.type }}</td>
-                <td>{{ movie.Summary }}</td>
-                <td>{{ movie.Synopsis }}</td>
                 <td>
-                    <a href="{{ path('app_back_movie_show', {'id': movie.id}) }}">show</a>
-                    <a href="{{ path('app_back_movie_edit', {'id': movie.id}) }}">edit</a>
+                    <a href="{{ path('app_back_movie_show', {'id': movie.id}) }}" class="btn btn-sm btn-success">show</a>
+                    <a href="{{ path('app_back_movie_edit', {'id': movie.id}) }}" class="btn btn-sm btn-warning">edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="10">no records found</td>
+                <td colspan="10">Pas de films trouvés, rajoutez-en.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_back_movie_new') }}">Create new</a>
 {% endblock %}
