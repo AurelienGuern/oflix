@@ -23,20 +23,24 @@ class ReviewController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // association du film courant avec la critique
             $review->setMovie($movie);
 
+            // on persiste et on sauvegarde
             $entityManager->persist($review);
+            // $entityManager->flush();
+
+            $this->addFlash('success', 'La critique a été ajouté au film.');
+
+            // on apelle une requête personnalisée qui calcule la moyenne
+            $averageRating = $reviewRepository->averageRating($movie);
+            // on modifie le Movie
+            $movie->setRating($averageRating);
+            // on sauvegarde
             $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'La critique a été ajoutée au film.'
-            );
-
-            $averageRating = $reviewRepository->averageRating($movie);
-            $movie->setRating($averageRating);
-            $entityManager->flush($movie);
-
+            $this->addFlash('success', 'La nouvelle note du film est ' . $averageRating);
 
             return $this->redirectToRoute('front_main_show', ['id' => $movie->getId()]);
         }
