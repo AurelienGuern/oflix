@@ -7,7 +7,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -17,34 +16,41 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\NotBlank]
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Email()]
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        message: 'The email {{ value }} is not a valid email.',
+    )]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'text')]
-    #[Assert\Length(min: 2, max: 5000)]
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'Votre commentaire est vraiment sommaire, merci de rentrer {{ limit }} caractères.',
+    )]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'float')]
-    #[Assert\Positive]
+    #[ORM\Column]
+    #[Assert\NotBlank(message: 'Merci de donner votre avis !')]
     private ?float $rating = null;
 
-    #[ORM\Column(type: 'json', nullable: true)]
-    private ?array $reactions = null;
+    #[ORM\Column(type: Types::JSON)]
+    private array $reactions = [];
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeImmutable $watchedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Movie $movie = null;
 
-
-
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -97,12 +103,12 @@ class Review
         return $this;
     }
 
-    public function getReactions(): ?array
+    public function getReactions(): array
     {
         return $this->reactions;
     }
 
-    public function setReactions(?array $reactions): static
+    public function setReactions(array $reactions): static
     {
         $this->reactions = $reactions;
 
@@ -114,7 +120,7 @@ class Review
         return $this->watchedAt;
     }
 
-    public function setWatchedAt(?\DateTimeImmutable $watchedAt): static
+    public function setWatchedAt(\DateTimeImmutable $watchedAt): static
     {
         $this->watchedAt = $watchedAt;
 
@@ -132,5 +138,4 @@ class Review
 
         return $this;
     }
-    
 }

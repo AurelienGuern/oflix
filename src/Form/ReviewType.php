@@ -4,13 +4,16 @@ namespace App\Form;
 
 use App\Entity\Movie;
 use App\Entity\Review;
+use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
 
 
 class ReviewType extends AbstractType
@@ -18,38 +21,45 @@ class ReviewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
-            ->add('email')
-            ->add('content')
+            ->add('username', TextType::class, [
+                'label' => "Nom d'utilisateur",
+            ])
+            ->add('email', EmailType::class, [
+                'label' => "Email de l'utilisateur",
+            ])
+            ->add('content', TextareaType::class, [
+                'label' => "Texte de votre critique",
+            ])
             ->add('rating', ChoiceType::class, [
-                'choices' => [
-                    'HORRIBLE' => 1,
-                    'Bof' => 2,
-                    'Cool !' => 3,
-                    'TOP TOP' => 4,
-                    'INCR' => 5,
+                // REFER : https://symfony.com/doc/6.4/reference/forms/types/choice.html#placeholder
+                'placeholder' => 'choisissez une option',
+                'choices'  => [
+                    'Excellent'         => 5,
+                    'Très bon'          => 4,
+                    'Bon'               => 3,
+                    'Peut mieux faire'  => 2,
+                    'A éviter'          => 1,
                 ],
-                'multiple' => false,
-                'expanded' => true,
+                'label' => "Votre appréciation",
             ])
             ->add('reactions', ChoiceType::class, [
-                'choices' => [
-                    'Rire' => 1,
-                    'Pleurer' => 2,
-                    'Réfléchir' => 3,
-                    'Dormir' => 4,
-                    'Rêver' => 5,
-                ],
-                'multiple' => true,
+                // REFER : https://symfony.com/doc/6.4/reference/forms/types/choice.html#select-tag-checkboxes-or-radio-buttons
                 'expanded' => true,
+                'multiple' => true,
+                'choices'  => [
+                    'Rire'      => 'smile',
+                    'Pleurer'   => 'cry',
+                    'Réfléchir' => 'think',
+                    'Dormir'    => 'sleep',
+                    'Rêver'     => 'dream',
+                ],
+                'label' => "Ce film vous a fait :",
             ])
-            ->add('watchedAt')
-            ->add('movie', EntityType::class, [
-                'class' => Movie::class,
-'choice_label' => 'id',
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Envoyer',
+            ->add('watchedAt', DateType::class, [
+                'label'     => "Quand avez vous vu ce film",
+                'widget'    => 'single_text',
+                'input'     => 'datetime_immutable',
+                'empty_data' => (new \DateTimeImmutable())->format('d/m/Y'),
             ]);
     }
 
@@ -60,4 +70,3 @@ class ReviewType extends AbstractType
         ]);
     }
 }
-
