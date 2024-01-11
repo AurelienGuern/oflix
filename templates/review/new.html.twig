@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle critique{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une critique de {{ movie.title }}</h1>
+
+    {{ form_start(form, {'attr' :{'novalidate' :'novalidate'}}) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success">Ajouter</button>
+    {{ form_end(form) }}
+{% endblock %}

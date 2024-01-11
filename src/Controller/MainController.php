@@ -102,30 +102,7 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/review/{id<\d+>}', name: 'front_main_review')]
-    public function review(Movie $movie = null, Request $request): Response
-    {
-        $review = new Review();
-        
-        
-        $form = $this->createForm(ReviewType::class, $review);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $review = $form->getData();
-            return $this->render('main/show.html.twig', [
-                'movie'     => $movie]);
    
-        }
-
-
-        return $this->render('main/review.html.twig', [
-            'movie'     => $movie,
-            'form' => $form->createView()
-
-        ]);
-    }
-
     /**
      * switcher le theme en utilisant la session
      *
