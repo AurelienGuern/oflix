@@ -78,7 +78,7 @@ class AppFixtures extends Fixture
             $movie->setSummary($faker->realText(60));
             $movie->setSynopsis($faker->sentence(4));
             $movie->setPoster($faker->imageUrl(200, 300, true));
-            $movie->setRating(null);
+            $movie->setRating(rand(1, 5));
 
             // on associe entre 0 et 4 genres à un movie
             for ($j = 0; $j < random_int(0, 5); $j++) {

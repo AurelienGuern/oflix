@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 class ReviewController extends AbstractController
 {
     #[Route('/review/{id<\d+>}', name: 'front_review_new')]
-    public function new(Movie $movie, Request $request, EntityManagerInterface $entityManager, ReviewRepository $reviewRepository): Response
+    public function new(EntityManagerInterface $entityManager, Movie $movie, Request $request, ReviewRepository $reviewRepository): Response
     {
-        $review = new Review;
-        $review->setWatchedAt(new \DateTimeImmutable);
+        $review = new Review();
+        // $review->setWatchedAt(new \DateTimeImmutable());
         $form = $this->createForm(ReviewType::class, $review);
 
         $form->handleRequest($request);
@@ -29,7 +29,7 @@ class ReviewController extends AbstractController
 
             // on persiste et on sauvegarde
             $entityManager->persist($review);
-            // $entityManager->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'La critique a été ajouté au film.');
 
@@ -42,6 +42,7 @@ class ReviewController extends AbstractController
 
             $this->addFlash('success', 'La nouvelle note du film est ' . $averageRating);
 
+            // on retourne sur la page de détail du Movie
             return $this->redirectToRoute('front_main_show', ['id' => $movie->getId()]);
         }
 
