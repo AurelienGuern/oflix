@@ -2,6 +2,7 @@
 
 namespace App\Controller\Back;
 
+
 use App\Entity\Movie;
 use App\Form\MovieType;
 use App\Repository\MovieRepository;
@@ -18,7 +19,7 @@ class MovieController extends AbstractController
     public function index(MovieRepository $movieRepository): Response
     {
         return $this->render('back/movie/index.html.twig', [
-            'movies' => $movieRepository->findAll(),
+            'movies' => $movieRepository->findAllOrderByDateAscDql(),
         ]);
     }
 

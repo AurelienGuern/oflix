@@ -35,6 +35,20 @@ class MovieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function findAllOrderByDateAscDql()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT m
+                FROM App\Entity\Movie m
+                ORDER BY m.releaseDate DESC'
+        );
+
+        // retourne un tableau d'objet
+        return $query->getResult();
+    }
+
     /**
     * @return Movie[] Returns an array of Movie objects
     */
