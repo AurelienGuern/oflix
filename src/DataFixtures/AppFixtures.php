@@ -7,8 +7,10 @@ use Faker\Factory;
 use App\Entity\Genre;
 use App\Entity\Movie;
 use App\Entity\Person;
+use App\Entity\Review;
 use App\Entity\Season;
 use App\Entity\Casting;
+use App\Repository\ReviewRepository;
 use Bluemmb\Faker\PicsumPhotosProvider;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -18,6 +20,11 @@ class AppFixtures extends Fixture
 {
     private $genres  = [];
     private $persons = [];
+
+    public function __construct(
+        private ReviewRepository $reviewRepository
+    )
+    {}  
 
     public function load(ObjectManager $manager): void
     {
@@ -68,7 +75,7 @@ class AppFixtures extends Fixture
                 for ($j = 1; $j < random_int(2, 12); $j++) {
                     $season = new Season;
                     $season->setNumber($j);
-                    $season->setEpisodeNumber(random_int(6, 12));
+                    $season->setEpisodesNumber(random_int(6, 12));
                     $season->setMovie($movie);
                     $manager->persist($season);
                 }
@@ -76,9 +83,9 @@ class AppFixtures extends Fixture
 
             $movie->setReleaseDate(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween()));
             $movie->setSummary($faker->realText(60));
-            $movie->setSynopsis($faker->sentence(4));
-            $movie->setPoster($faker->imageUrl(200, 300, true));
-            $movie->setRating(rand(1, 5));
+            $movie->setSynopsis($faker->optional(0.9)->realText());
+            $movie->setPoster($faker->optional(0.9)->imageUrl(200, 300, true));
+            $movie->setRating(null);
 
             // on associe entre 0 et 4 genres à un movie
             for ($j = 0; $j < random_int(0, 5); $j++) {
@@ -101,7 +108,27 @@ class AppFixtures extends Fixture
                 }
             }
 
+            // on crée entre 0 et 5 critiques (Reviews)
+            for ($j = 0; $j < random_int(0, 6); $j++) {
+                $review = new Review();
+                $review->setMovie($movie);
+                $review->setUsername($faker->name());
+                $review->setEmail($faker->email());
+                $review->setContent(($faker->realTextBetween()));
+                $review->setRating(random_int(1, 5));
+                $review->setWatchedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisDecade()));
+                $reactions = ['smile', 'cry', 'think', 'sleep', 'dream',];
+                shuffle($reactions);
+                $review->setReactions(array_slice($reactions, 0, random_int(0, 5)));
+                $manager->persist($review);
+            }
+
             $manager->persist($movie);
+            // on doit flusher pour pouvoir calculer la moyenne du film
+            $manager->flush();
+            // Calcul du nouveau rating du film
+            $averageRating = $this->reviewRepository->averageRating($movie);
+            $movie->setRating($averageRating);
         }
         $manager->flush();
     }

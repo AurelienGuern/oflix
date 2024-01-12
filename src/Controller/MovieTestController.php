@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Genre;
 use App\Entity\Movie;
 use App\Entity\Season;
+use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MovieTestController extends AbstractController
 {
@@ -25,6 +27,19 @@ class MovieTestController extends AbstractController
         ]);
     }
 
+    #[Route('/genre/test', name: 'app_genre_test_browse')]
+    public function genreBrowse(GenreRepository $genreRepository): Response
+    {
+        // l'objet de browse est d'afficher l'ensemble des données de l'entité Movie
+        // on récupère toutes les movies
+        $genres = $genreRepository->findAll();
+        // on obtient un tableau de movie[]
+        dd($genres);
+        return $this->render('movie_test/index.html.twig', [
+            'controller_name' => 'MovieTestController',
+        ]);
+    }
+
     #[Route('/movie/test/add', name: 'app_movie_test_add')]
     public function add(EntityManagerInterface $entityManager): Response
     {
@@ -34,7 +49,7 @@ class MovieTestController extends AbstractController
         $movie->setReleaseDate(new \DateTimeImmutable('26-09-1979'));
         $movie->setDuration(182);
         $movie->setSummary("Saïgon, le jeune capitaine Willard doit éliminer le colonel Kurtz");
-        $movie->setSynopsis("Cloîtré ");
+        $movie->setSynopsis("Cloîtré dans une chambre d'hôtel de Saïgon, le jeune capitaine Willard, mal rasé et imbibé d'alcool, est sorti de sa prostration par une convocation de l'état-major américain. Le général Corman lui confie une mission qui doit rester secrète : éliminer le colonel Kurtz, un militaire aux méthodes quelque peu expéditives et qui sévit au-delà de la frontière cambodgienne. ");
         $movie->setPoster("http://4everstatic.com/images/850xX/art/film-et-serie/apocalypse-now-181365.jpg");
         $movie->setRating("4.8");
         $movie->setType("Film");
@@ -72,8 +87,16 @@ class MovieTestController extends AbstractController
     #[Route('/movie/test/{id<\d+>}/edit', name: 'app_movie_test_edit')]
     public function edit(Movie $movie, EntityManagerInterface $entityManager): Response
     {
-        // l'objet de edit est de mofifier un film
+        // l'objet de edit est de modifier un film
         $movie->setDuration(245);
+
+        // ajouter un genre à un film
+        $genre = new Genre();
+        $genre->setName('Science-fiction');
+        $entityManager->persist($genre);
+
+        // on rajoute le $genre au $movie
+        $movie->addGenre($genre);
 
         // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
@@ -123,7 +146,7 @@ class MovieTestController extends AbstractController
                 // on crée une saison
                 $season = new Season;
                 $season->setNumber(1);
-                $season->setEpisodeNumber(rand(6,12));
+                $season->setEpisodesNumber(rand(6,12));
                 // on doit associer la saison au film
                 $season->setMovie($movie);
                 // les deux sont équivalent, mais Symfony conseille de faire l'association du coté du owning side 
@@ -137,7 +160,7 @@ class MovieTestController extends AbstractController
 
         // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
-        return new Response("ajout films et saisons");
+        return new Response('Création des films et des saisons OK');
 
         return $this->render('movie_test/index.html.twig', [
             'controller_name' => 'MovieTestController',

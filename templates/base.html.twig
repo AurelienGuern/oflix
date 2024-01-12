@@ -1,3 +1,4 @@
+{# Fichier : base.html.twig | Date: 2024-01-01 | Auteur: Patrick SUFFREN #}
 <!doctype html>
 <html lang="fr">
 
@@ -22,7 +23,7 @@
 		<!-- favicon -->
 		{% endblock %}
 
-{% block javascripts %}
+		{% block javascripts %}
 		<script>
 		// Afficher ou masquer le bouton en fonction du défilement
 		window.onscroll = function() {
@@ -45,6 +46,7 @@
 
 		</script>
 		{% endblock %}
+
 		<title>O'flix</title>
 	</head>
 
@@ -77,11 +79,12 @@
 								Films, séries TV</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{ path('front_favorites_index') }}">
+							<a class="nav-link" href="{{ path('front_favorites_list') }}">
 								<i class="bi bi-bookmark"></i>
 								Ma liste</a>
 						</li>
 					</ul>
+					<p class="btn btn-warning">Site du cours</p>
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -93,7 +96,7 @@
 									<a class="dropdown-item" href="#">Profil</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="{{ path('app_back_movie_index')}}">Backoffice</a>
+									<a class="dropdown-item" href="{{ path('app_back_movie_index') }}">Backoffice</a>
 								</li>
 								<li>
 									<hr class="dropdown-divider">
@@ -116,21 +119,23 @@
 				</div>
 			</div>
 		</nav>
+		{# Sous navigation pour le back #}
+		{% block sub_nav %}{% endblock %}
 
 		{# read and display all flash messages #}
 		{% for label, messages in app.flashes %}
     		{% for message in messages %}
         		<div class="flash-{{ label }}">
 				    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                		{{ message }}
+                		{{ message|striptags('<strong>')|raw }}
                 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             		</div>
         		</div>
     		{% endfor %}
 		{% endfor %}
+		{# Bouton de retour #}
+		<button onclick="topFunction()" id="myBtn" title="Retour en haut">&#9650;</button>
 
-		{# Sous navigation pour le back #}
-		{% block sub_nav %}{% endblock %}
 		{% block body %}{% endblock %}
 
     <!-- footer -->
@@ -147,8 +152,6 @@
 
 			
         </span>
-
-		
     </footer>
 
     <!-- Optional JavaScript; choose one of 

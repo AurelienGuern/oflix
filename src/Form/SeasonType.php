@@ -14,12 +14,13 @@ class SeasonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Number')
-            ->add('EpisodeNumber')
-            ->add('movie', EntityType::class, [
-                'class' => Movie::class,
-'choice_label' => 'id',
-            ])
+            ->add('number')
+            ->add('episodesNumber')
+            // on ne demande pas le movie car il est donné quand on veut ajouter une saison pour une série donnée
+            // ->add('movie', EntityType::class, [
+            //     'class' => Movie::class,
+            //     'choice_label' => 'id',
+            // ])
         ;
     }
 

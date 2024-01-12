@@ -30,8 +30,11 @@
                 <td>{{ movie.rating }}</td>
                 <td>{{ movie.type }}</td>
                 <td>
-                    <a href="{{ path('app_back_movie_show', {'id': movie.id}) }}" class="btn btn-sm btn-success">show</a>
-                    <a href="{{ path('app_back_movie_edit', {'id': movie.id}) }}" class="btn btn-sm btn-warning">edit</a>
+                    <a href="{{ path('app_back_movie_show', {'id': movie.id}) }}" class="btn btn-sm btn-success">détail</a>
+                    <a href="{{ path('app_back_movie_edit', {'id': movie.id}) }}" class="btn btn-sm btn-warning">modification</a>
+                    {% if movie.type == 'Série' %}
+                        <a href="{{ path('app_back_season_index', {'id': movie.id}) }}" class="btn btn-sm btn-info">saisons</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

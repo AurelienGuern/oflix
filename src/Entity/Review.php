@@ -50,6 +50,11 @@ class Review
     #[ORM\JoinColumn(nullable: false)]
     private ?Movie $movie = null;
 
+    public function __construct()
+    {
+        $this->watchedAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

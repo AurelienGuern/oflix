@@ -1,58 +1,51 @@
+{# Fichier : index.html.twig | Date: 2024-01-01 | Auteur: Patrick SUFFREN #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Favoris{% endblock %}
+{% block title %}Gestion des favoris
+{% endblock %}
+{% block nav_active_favorites %}active
+{% endblock %}
 
 {% block body %}
+	<!-- main -->
 
-    <!-- main -->
+<div class="container-xl bg-light p-5 border-top">
 
-    <div class="container-xl bg-light p-5 border-top">
+    <div class="row mb-2">
 
-        <div class="row mb-2">
+        <h2 class="text-muted fw-bold mb-4">Ma liste</h2>
+        {% for key, favorite in app.session.get('favorites') %}
 
-            <h2 class="text-muted fw-bold mb-4">Ma liste</h2>
-
-
-{% for label, messages in app.flashes %}
-    		{% for message in messages %}
-				    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                		{{ movie.title ~ ' ' ~  message }}
-                		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            		</div>
-        		</div>
-    		{% endfor %}
-		{% endfor %}
-         
-					{% for key, movie in movies %}
-              {% if movie is not null %}
             <div class="col-6">
 
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm bg-white position-relative">
-                    <div class="col-4 movie__poster" style="background-image: url({{movie.poster}});">
+                    <div class="col-4 movie__poster" style="background-image: url({{ favorite.poster }});">
                         <img src="{{ asset('images/poster-placeholder.png') }}" class="img-fluid">
-                        <!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
                     </div>
                     <div class="col-8 p-4 d-flex flex-column position-static">
-                        <a href="{{path('front_favorites_remove', {id: movie.id}) }}" class="movie__favorite fs-1 my-2 mx-3 link-danger"><i class="bi bi-bookmark-x-fill"></i></a>
-                        <strong class="d-inline-block mb-2 text-primary">{{movie.type}}</strong>
-                        
-                        <h3 class="mb-1">{{ movie.title }}</h3>
-                        <div class="mb-1 text-muted">{{movie.duration}} min</div>
-                        
-                        
-                        <a href="{{ path('front_main_show', {id: movie.id}) }}" class="fs-1 mt-3 text-danger align-self-start">
+                        {{ include('front/favorites/_bookmark.html.twig') }}	
+                        <strong class="d-inline-block mb-2 text-primary">{{ favorite.type }}</strong>
+                        <h3 class="mb-1">{{ favorite.title }}</h3>
+                        <div class="mb-1 text-muted">{{ favorite.duration }}
+                            min</div>
+                        <a href="{{ path('front_main_show',  {id: key}) }}" class="fs-1 mt-3 text-danger align-self-start">
                             <i class="bi bi-arrow-right-square"></i>
                         </a>
-                        
                     </div>
                 </div>
+
             </div>
-        {% endif %}
+        {% else %}
+            <div class="col-6">
+                Aucun favori enregistré
+            </div>
         {% endfor %}
+
         <div class="col">
-            <a href="{{path('front_favorites_empty') }}" class="btn btn-danger btn-sm" onclick="return confirm('Vider votre liste de favoris ?');">Vider la liste</a>
+            <a href="{{ path('front_favorites_empty') }}" class="btn btn-danger btn-sm" onclick="return confirm('Vider votre liste de favoris ?');">Vider la liste</a>
         </div>
 
     </div>
-           
+</div>
+
 {% endblock %}

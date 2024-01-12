@@ -15,10 +15,10 @@ class Season
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $Number = null;
+    private ?int $number = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $EpisodeNumber = null;
+    private ?int $episodesNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
     #[ORM\JoinColumn(nullable: false)]
@@ -31,24 +31,24 @@ class Season
 
     public function getNumber(): ?int
     {
-        return $this->Number;
+        return $this->number;
     }
 
-    public function setNumber(int $Number): static
+    public function setNumber(int $number): static
     {
-        $this->Number = $Number;
+        $this->number = $number;
 
         return $this;
     }
 
-    public function getEpisodeNumber(): ?int
+    public function getEpisodesNumber(): ?int
     {
-        return $this->EpisodeNumber;
+        return $this->episodesNumber;
     }
 
-    public function setEpisodeNumber(int $EpisodeNumber): static
+    public function setEpisodesNumber(int $episodesNumber): static
     {
-        $this->EpisodeNumber = $EpisodeNumber;
+        $this->episodesNumber = $episodesNumber;
 
         return $this;
     }

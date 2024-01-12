@@ -21,7 +21,7 @@ Pour cela on va faire appel à la session Symfony.
 
 - Au niveau de l'icône de marque-page, faire en sorte de pouvoir exécuter une méthode HTTP POST, vers l'URL d'ajout à la liste.
 - On va stocker en session, les infos du film. On veut pouvoir y ajouter tous les films. On va donc stocker ces infos dans un tableau.
-- Comment procéder avec la session, à l'ajout : _on récupère le panier de la session, on y ajoute les infos demandées, on remet le nouveau panier dans la session_. Voir [Session > Basic Usage > *From a Symfony controller*](https://symfony.com/doc/current/session.html#session-intro)
+- Comment procéder avec la session, à l'ajout : _on récupère le panier de la session, on y ajoute les infos demandées, on remet le nouveau panier dans la session_. Voir [Session > Basic Usage > _From a Symfony controller_](https://symfony.com/doc/current/session.html#session-intro)
   - Une fois le traitement effectué, [rediriger vers la page voulue](https://symfony.com/doc/current/controller.html#redirecting).
 - Sur la page "Ma liste", on récupère et on dump le panier qui est en session pour s'assurer que ça fonctionne bien.
 - **Ajouter les pré-requis sur les méthodes GET, POST ou les deux pour chaque méthode de contrôleur**, voir [requirements => Adding HTTP method requirements](https://symfony.com/doc/current/routing.html#matching-http-methods).
@@ -59,7 +59,3 @@ Pour cela on va faire appel à la session Symfony.
 - Rendre la sélection du menu dynamique (CSS active), selon la route de la page courante.
   - Possibilité 1 : Twig et la variable globale [`app`](https://symfony.com/doc/current/templates.html#the-app-global-variable)
   - Possibilité 2 : Il existe peut-être une autre solution, directement liée au système de template Twig...
-
-### Mega Bonus
-
-- Modifier le code actuel pour pouvoir réaliser les modifications de la liste en AJAX/fetch.

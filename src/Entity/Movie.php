@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -18,89 +17,85 @@ class Movie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    private ?string $title = null;
+
     #[ORM\Column]
+    #[Assert\NotBlank()]
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(
-        min: 5,
-        max: 255,
-        notInRangeMessage: 'Durée au minimum de {{ min }}  et de {{ max }} maximum',
-    )]
+    #[Assert\NotBlank()]
+    #[Assert\Positive]
     private ?int $duration = null;
 
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $summary = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\Url]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $synopsis = null;
+
+    #[ORM\Column(length: 2083, nullable: true)]
+    #[Assert\Length(max: 2083)]
+    #[Assert\Url()]
     private ?string $poster = null;
 
+    // Le rating est calculé sur la base des différentes critiques
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1, nullable: true)]
     #[Assert\Range(
         min: 1,
         max: 5,
-        notInRangeMessage: 'Note mini de {{ min }}  et {{ max }} au max',
     )]
     private ?string $rating = null;
 
     #[ORM\Column(length: 30)]
-    #[Assert\NotBlank()] 
+    #[Assert\NotBlank()]
     #[Assert\Choice(['Film', 'Série'])]
     private ?string $type = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(
-        min: 2,
-        max: 50,
-        minMessage: 'Le résumé doit faire au moins {{ limit }} caractères',
-        maxMessage: 'Le résumé doit faire  moins de {{ limit }} caractères',
-    )]
-    private ?string $Summary = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\Length(
-        min: 2,
-        max: 50,
-        minMessage: 'Le synopsis doit faire au moins {{ limit }} caractères',
-        maxMessage: 'Le synopsis doit faire  moins de {{ limit }} caractères',
-    )]
-    private ?string $Synopsis = null;
-
-    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true, cascade: ["remove"])]
+    #[ORM\OrderBy(["number" => "ASC"])]
     private Collection $seasons;
 
-    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class)]
-    #[ORM\OrderBy(["creditOrder" => "ASC"])]
-
-    private Collection $castings;
-
-    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie')]
-    #[Assert\Count(
-        min: 1,
-        max: 4
-    )]
+    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movies')]
+    // REFER : https://symfony.com/doc/current/reference/constraints/Count.html
+    #[Assert\Count(min:2, max:5)]
     private Collection $genres;
 
-    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]
-    private Collection $reviews;
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class, orphanRemoval: true)]
+    #[ORM\OrderBy(["creditOrder" => "ASC"])]
+    // REFER : https://www.doctrine-project.org/projects/doctrine-orm/en/2.17/reference/attributes-reference.html#attrref_orderby
+    private Collection $castings;
 
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class, orphanRemoval: true)]
+    private Collection $reviews;
 
     public function __construct()
     {
-        $this->seasons = new ArrayCollection();
-        $this->castings = new ArrayCollection();
-        $this->genres = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
+        $this->seasons      = new ArrayCollection();
+        $this->genres       = new ArrayCollection();
+        $this->castings     = new ArrayCollection();
+        $this->reviews      = new ArrayCollection();
         $this->releaseDate  = new \DateTimeImmutable();
-
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
     }
 
     public function getReleaseDate(): ?\DateTimeImmutable
@@ -127,14 +122,26 @@ class Movie
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getSummary(): ?string
     {
-        return $this->title;
+        return $this->summary;
     }
 
-    public function setTitle(string $title): static
+    public function setSummary(string $summary): static
     {
-        $this->title = $title;
+        $this->summary = $summary;
+
+        return $this;
+    }
+
+    public function getSynopsis(): ?string
+    {
+        return $this->synopsis;
+    }
+
+    public function setSynopsis(?string $synopsis): static
+    {
+        $this->synopsis = $synopsis;
 
         return $this;
     }
@@ -144,7 +151,7 @@ class Movie
         return $this->poster;
     }
 
-    public function setPoster(string $poster): static
+    public function setPoster(?string $poster): static
     {
         $this->poster = $poster;
 
@@ -156,7 +163,7 @@ class Movie
         return $this->rating;
     }
 
-    public function setRating(string $rating): static
+    public function setRating(?string $rating): static
     {
         $this->rating = $rating;
 
@@ -171,30 +178,6 @@ class Movie
     public function setType(string $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getSummary(): ?string
-    {
-        return $this->Summary;
-    }
-
-    public function setSummary(string $Summary): static
-    {
-        $this->Summary = $Summary;
-
-        return $this;
-    }
-
-    public function getSynopsis(): ?string
-    {
-        return $this->Synopsis;
-    }
-
-    public function setSynopsis(string $Synopsis): static
-    {
-        $this->Synopsis = $Synopsis;
 
         return $this;
     }
@@ -230,6 +213,33 @@ class Movie
     }
 
     /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+            $genre->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        if ($this->genres->removeElement($genre)) {
+            $genre->removeMovie($this);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Casting>
      */
     public function getCastings(): Collection
@@ -258,37 +268,6 @@ class Movie
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Genre>
-     */
-    public function getGenres(): Collection
-    {
-        return $this->genres;
-    }
-
-    public function addGenre(Genre $genre): static
-    {
-        if (!$this->genres->contains($genre)) {
-            $this->genres->add($genre);
-            $genre->addMovie($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGenre(Genre $genre): static
-    {
-        if ($this->genres->removeElement($genre)) {
-            $genre->removeMovie($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Review>
-     */
 
     /**
      * @return Collection<int, Review>

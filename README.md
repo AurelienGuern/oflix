@@ -44,6 +44,7 @@ Installer un nouveau projet Symfony _"skeleton"_, via _composer_, depuis votre d
 - `composer create-project symfony/skeleton oflix ^6`
 
 [remonter tous les fichiers de Symfony à la racine de votre dépôt cloné](https://kourou.oclock.io/ressources/fiche-recap/symfony-basics/#anchor-remonter-tous-les-fichiers-dun-niveau).
+
 ```bash
 mv oflix/* oflix/.* .
 ```
@@ -55,13 +56,12 @@ rmdir oflix
 ```
 
 > :hand: On peut utiliser le serveur PHP pour lancer l'appli Symfony : `php -S 0.0.0.0:8000 -t public`.
-> 
+>
 > :hand: Ou passer par Apache, on installe le `.htaccess` via `composer require symfony/apache-pack` (répondre `y` à l'invite).
 
 ### Les routes
 
 > :hand: Lister les pages attendues afin d'en déduire les routes (URL, contrôleur, méthode, paramètres, description). Les noter dans le fichier `routes.md` fourni dans le dossier _sources_.
-
 > On commence par **la page d'accueil** et **la page du film/série**
 
 ### Les assets
@@ -69,7 +69,6 @@ rmdir oflix
 Dans le dossier `public` copier les 2 sous-dossiers `css` et `images` du dossier `sources/html-css`.
 
 > On s'occupera du fichier `data.php` dans quelques minutes.
-
 > :hand: A ce stade la structure de notre site est en place, il ne nous reste plus qu'à attaquer le code !
 
 ---

@@ -32,6 +32,28 @@ html {
     right: 0;
 }
 
+/* Style du bouton */
+#myBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#myBtn:hover {
+    background-color: #0056b3;
+}
+
+
 
 /* Back Office */
 

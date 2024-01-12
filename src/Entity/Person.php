@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PersonRepository;
-use Collator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,7 +21,7 @@ class Person
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\OneToMany(mappedBy: 'person', targetEntity: Casting::class)]
+    #[ORM\OneToMany(mappedBy: 'person', targetEntity: Casting::class, orphanRemoval: true)]
     private Collection $castings;
 
     public function __construct()
@@ -59,6 +58,11 @@ class Person
         return $this;
     }
 
+    public function getFullname(): ?string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
     /**
      * @return Collection<int, Casting>
      */
@@ -87,10 +91,5 @@ class Person
         }
 
         return $this;
-    }
-
-    public function getFullName(): ?string 
-    {
-        return $this->firstname . ' ' . $this->lastname;
     }
 }

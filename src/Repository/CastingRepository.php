@@ -46,6 +46,20 @@ class CastingRepository extends ServiceEntityRepository
             ->getQuery()
             // on renvoie le tableau de résultats
             ->getResult();
+
+        // même requête en DQL
+        // $entityManager = $this->getEntityManager();
+
+        // $query = $entityManager->createQuery(
+        //     'SELECT c, p
+        //     FROM App\Entity\Casting c
+        //     INNER JOIN c.person AS p
+        //     WHERE c.movie = :movie
+        //     ORDER BY c.creditOrder ASC'
+        // )->setParameter('movie', $movie);
+
+        // // returns an array of Movie objects
+        // return $query->getResult();
     }
 
 // SELECT p.*, c.*

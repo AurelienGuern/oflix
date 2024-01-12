@@ -1,0 +1,27 @@
+USER: email, username, role
+Reviews, 0N USER, 01 REVIEW
+REVIEW: content, rating, watched_at
+:
+:
+:
+
+:
+:
+Tacled_by, 01 REVIEW, 0N MOVIE
+CASTING: role, credit_order
+Plays, 0N PERSON, 01 CASTING
+PERSON: person code, firstname, lastname
+
+GENRE: name
+Belongs to, 0N MOVIE, 0N GENRE
+MOVIE: title, release_date, duration, summary, synopsis, poster, rating, type
+Is_played, 01 CASTING, 0N MOVIE
+:
+:
+
+:
+:
+Has, 11 SEASON, 0N MOVIE
+SEASON: number, episodes number
+:
+:

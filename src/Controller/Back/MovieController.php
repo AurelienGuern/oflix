@@ -2,7 +2,6 @@
 
 namespace App\Controller\Back;
 
-
 use App\Entity\Movie;
 use App\Form\MovieType;
 use App\Repository\MovieRepository;
@@ -19,7 +18,7 @@ class MovieController extends AbstractController
     public function index(MovieRepository $movieRepository): Response
     {
         return $this->render('back/movie/index.html.twig', [
-            'movies' => $movieRepository->findAllOrderByDateAscDql(),
+            'movies' => $movieRepository->findAll(),
         ]);
     }
 
@@ -34,6 +33,8 @@ class MovieController extends AbstractController
             $entityManager->persist($movie);
             $entityManager->flush();
 
+            // on prépare un message flash
+            // REFER : https://symfony.com/doc/current/session.html#flash-messages
             $this->addFlash(
                 'success',
                 '<strong>' . $movie->getTitle() . '</strong> a été ajouté à votre base.'
@@ -65,6 +66,8 @@ class MovieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            // on prépare un message flash
+            // REFER : https://symfony.com/doc/current/session.html#flash-messages
             $this->addFlash(
                 'success',
                 '<strong>' . $movie->getTitle() . '</strong> a été modifié.'
@@ -86,6 +89,8 @@ class MovieController extends AbstractController
             $entityManager->remove($movie);
             $entityManager->flush();
 
+            // on prépare un message flash
+            // REFER : https://symfony.com/doc/current/session.html#flash-messages
             $this->addFlash(
                 'success',
                 '<strong>' . $movie->getTitle() . '</strong> a été supprimé.'

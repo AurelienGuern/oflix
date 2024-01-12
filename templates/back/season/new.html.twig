@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/layout_back.html.twig' %}
 
-{% block title %}New Season{% endblock %}
+{% block title %}Nouvelle saison{% endblock %}
 
 {% block body %}
-    <h1>Create new Season</h1>
+    <h1>Nouvelle saison de la série {{ movie.title }} </h1>
 
     {{ include('back/season/_form.html.twig') }}
 
-    <a href="{{ path('app_back_season_index') }}">back to list</a>
+    <a href="{{ path('app_back_season_index', {'id': movie.id}) }}" class="btn btn-info">retour</a>
 {% endblock %}

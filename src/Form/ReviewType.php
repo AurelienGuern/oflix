@@ -5,16 +5,15 @@ namespace App\Form;
 use App\Entity\Movie;
 use App\Entity\Review;
 use DateTimeImmutable;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ReviewType extends AbstractType
 {
@@ -33,6 +32,8 @@ class ReviewType extends AbstractType
             ->add('rating', ChoiceType::class, [
                 // REFER : https://symfony.com/doc/6.4/reference/forms/types/choice.html#placeholder
                 'placeholder' => 'choisissez une option',
+                'expanded' => false,
+                'multiple' => false,
                 'choices'  => [
                     'Excellent'         => 5,
                     'Très bon'          => 4,
@@ -60,7 +61,8 @@ class ReviewType extends AbstractType
                 'widget'    => 'single_text',
                 'input'     => 'datetime_immutable',
                 'empty_data' => (new \DateTimeImmutable())->format('d/m/Y'),
-            ]);
+            ])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

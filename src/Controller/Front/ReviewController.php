@@ -29,6 +29,8 @@ class ReviewController extends AbstractController
 
             // on persiste et on sauvegarde
             $entityManager->persist($review);
+            // on doit sauvegarder pour mettre en base la dernière critique
+            // et l'utiliser lors du calcul du rating du film
             $entityManager->flush();
 
             $this->addFlash('success', 'La critique a été ajouté au film.');
