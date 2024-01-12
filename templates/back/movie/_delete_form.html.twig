@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('app_back_movie_delete', {'id': movie.id}) }}" onsubmit="return confirm('TU ES SUR ?');">
+<form method="post" action="{{ path('app_back_movie_delete', {'id': movie.id}) }}" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cet élément ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
-    <button class="btn btn-danger">Supprimer</button>
+    <button class="btn btn-danger">Suppression</button>
 </form>
