@@ -94,6 +94,8 @@ class Movie
         $this->castings = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->releaseDate  = new \DateTimeImmutable();
+
     }
 
     public function getId(): ?int

@@ -34,6 +34,11 @@ class MovieController extends AbstractController
             $entityManager->persist($movie);
             $entityManager->flush();
 
+            $this->addFlash(
+                'success',
+                '<strong>' . $movie->getTitle() . '</strong> a été ajouté à votre base.'
+            );
+
             return $this->redirectToRoute('app_back_movie_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -60,6 +65,11 @@ class MovieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash(
+                'success',
+                '<strong>' . $movie->getTitle() . '</strong> a été modifié.'
+            );
+
             return $this->redirectToRoute('app_back_movie_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,6 +85,11 @@ class MovieController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->request->get('_token'))) {
             $entityManager->remove($movie);
             $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                '<strong>' . $movie->getTitle() . '</strong> a été supprimé.'
+            );
         }
 
         return $this->redirectToRoute('app_back_movie_index', [], Response::HTTP_SEE_OTHER);
