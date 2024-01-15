@@ -1,3 +1,62 @@
-_security_logout:
-    resource: security.route_loader.logout
-    type: service
+security:
+    # REFER : https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # REFER : https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # on défini un utilisateur admin à la main, dans ce fichier
+        # avec une référence à la clé "provider" du firewall "main"
+        backend_users:
+            # type de user 'en mémoire' memory: est un mot clé du language, pas une référence comme les autres
+            memory:
+                # liste d'utilisateurs
+                users:
+                    # syntaxe : nom, mot de passe, tableau de rôles
+                    admin: { password: '$2y$13$GWsNcGemDRwNFAdR2D.NuuVv2yu/XLmNXxKy7F82Chad0vianp.Gy', roles: ['ROLE_ADMIN']}
+        # users_in_memory: { memory: null }
+    # le firewall est un ensemble de règles de sécurité liées à Symfony
+    firewalls:
+        # on peut définir des règles de sécurités variables en fonction du niveau
+        dev:
+            # motif du chemin dans la route
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            # sécurité désactivée
+            security: false
+        # Dans tous les autres cas, pour toutes les autres routes
+        main:
+            # Ne démarre pas de session pour les users anonymes
+            lazy: true
+            provider: backend_users
+            # un moyen de s'authentifier
+            http_basic: true
+
+            # route de déconnexion
+            logout:
+                path: app_logout
+
+            # activate different ways to authenticate
+            # REFER : https://symfony.com/doc/current/security.html#the-firewall
+
+            # REFER : https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+         # seul un admin peut créer un article
+        - { path: ^/post/new, roles: ROLE_ADMIN }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon
