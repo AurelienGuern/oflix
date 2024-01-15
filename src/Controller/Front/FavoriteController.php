@@ -7,12 +7,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class FavoriteController extends AbstractController
 {
     #[Route('/favorites', name: 'front_favorites_index')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(SessionInterface $session, MovieRepository $movieRepository): Response
     {
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         // Récupérer tous les films
         $allMovies = $movieRepository->findAll();
         
