@@ -37,19 +37,29 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/back, roles: ROLE_ADMIN,  }
-        - { path: ^/review, roles: ROLE_USER }
+        # ROLE_ADMIN : Sécuriser toutes les routes /add /edit /delete + test
+        - { path: ^/test,                           roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season)/new,        roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season)/\d+/edit,   roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season)/\d+,        roles: ROLE_ADMIN, methods: [POST] }
 
-        - { path: ^/show, roles: ROLE_MANAGER }
-        - { path: ^/genre, roles: ROLE_MANAGER }
-        - { path: ^/back, roles: ROLE_ADMIN }
+        # ROLE_MANAGER : accès aux pages de listes movie, genres etc. et pages show (si existantes).
+        - { path: ^/back,                           roles: ROLE_MANAGER }
+
+        # ROLE_USER : ajouter une critique sur un film.
+        - { path: ^/movie/\d+/review,               roles: ROLE_USER }
+        - { path: ^/favorites,                      roles: ROLE_USER }
+
+        # Anonyme : toutes les autres routes
+
 
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
     # REFER :https://symfony.com/doc/6.4/security.html#hierarchical-roles
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
+        ROLE_ADMIN:         ROLE_MANAGER
+        ROLE_MANAGER:       ROLE_USER
 
 when@test:
     security:

@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 
 use Faker\Factory;
+use App\Entity\User;
 use App\Entity\Genre;
 use App\Entity\Movie;
 use App\Entity\Person;
@@ -28,6 +29,29 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+
+          // admin
+          $user = new User();
+          $user->setEmail('admin@admin.com');
+          $user->setRoles(['ROLE_ADMIN']);
+          $user->setPassword('$2y$13$nLf0MAlwK3oQBNVeZJaXduk2O5CzhldPfG/9lDNCNgD5pHTaiIyOS');
+          $manager->persist($user);
+  
+          // manager
+          $user = new User();
+          $user->setEmail('manager@manager.com');
+          $user->setRoles(['ROLE_MANAGER']);
+          $user->setPassword('$2y$13$xw9rC.dF9jJmAXnPzTsny.PMghC.NEFlroHkXM92zCQox9SPqokMy');
+          $manager->persist($user);
+  
+          // user
+          $user = new User();
+          $user->setEmail('user@user.com');
+          $user->setRoles(['ROLE_USER']);
+          $user->setPassword('$2y$13$/hHmOqI0nPYqOczmSlqGiOEHMh8GPs5H8F5aUUGiDtDHu9JMdudey');
+          $manager->persist($user);
+  
+          $manager->flush();
         // create a French faker
         $faker = Factory::create('fr_FR');
         $faker->addProvider(new \Xylis\FakerCinema\Provider\Movie($faker));
