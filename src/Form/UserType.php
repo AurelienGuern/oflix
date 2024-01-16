@@ -4,18 +4,21 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'label' => 'Courriel',
+            ])
             ->add('roles', ChoiceType::class, [
-                'multiple'      => false,
+                'multiple'      => true,
                 'expanded'      => true,
                 'choices'       => [
                     'administrateur'    => 'ROLE_ADMIN',
@@ -23,7 +26,7 @@ class UserType extends AbstractType
                     'utilisateur'       => 'ROLE_USER',
                 ],
                 'empty_data'    => '',
-                'label-attr'    => [
+                'label_attr'    => [
                     'class'     => 'checkbox-inline',
                 ],
             ])
