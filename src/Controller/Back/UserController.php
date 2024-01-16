@@ -42,7 +42,12 @@ class UserController extends AbstractController
             try {
                 $entityManager->flush();
             } catch (\Throwable $th) {
-                $this->addFlash('warning', 'Cette adresse mail existe déjà');
+                if ($th->getCode() === 1062) {
+                    $this->addFlash('warning', 'Cette adresse mail existe déjà');
+                } else {
+                    throw $th;
+                }
+                
             }
 
             return $this->redirectToRoute('app_back_user_index', [], Response::HTTP_SEE_OTHER);
@@ -65,11 +70,17 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_back_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
+        // sauvegarde du mot de passe
+        $oldPassword = $user->getPassword();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+            if ($user->getPassword()) {
+                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+            } else {
+                $user->setPassword($oldPassword);
+            }
             try {
                 $entityManager->flush();
             } catch (\Throwable $th) {
@@ -89,13 +100,12 @@ class UserController extends AbstractController
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $currentUser = $this->getUser();
-            if ($currentUser !== $user) {
+            $currenUser = $this->getUser();
+            if ($currenUser !== $user) {
                 $entityManager->remove($user);
                 $entityManager->flush();
-            }
-            else {
-                $this->addFlash('danger', 'Vous ne pouvez pas supprimer l\utilisateur connecté');
+            } else {
+                $this->addFlash('danger', 'vous ne pouvez pas supprimer l\'utiliseur connecté');
             }
         }
 

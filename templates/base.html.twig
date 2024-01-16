@@ -94,10 +94,12 @@ document.documentElement.scrollTop = 0; // Pour les autres navigateurs
 						{# REFER : https://symfony.com/doc/6.4/security.html#access-control-in-templates #}
 						{# REFER : https://symfony.com/doc/6.4/security.html#checking-to-see-if-a-user-is-logged-in #}
 
+						
 							{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-								<ul class="navbar-nav ms-auto mb-2 mb-lg-0"> <li class="nav-item dropdown">
+							<ul class="navbar-nav ms-auto mb-2 mb-lg-0"> 
+								<li class="nav-item dropdown">
 									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-										<span>Charles</span>
+										<span>{{ app.user.email }}</span>
 										<i class="bi bi-person-square"></i>
 									</a>
 									<ul class="dropdown-menu">
