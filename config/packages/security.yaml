@@ -47,7 +47,7 @@ security:
         - { path: ^/back,                           roles: ROLE_MANAGER }
 
         # ROLE_USER : ajouter une critique sur un film.
-        - { path: ^/movie/\d+/review,               roles: ROLE_USER }
+        - { path: ^/review/\d+,                     roles: ROLE_USER }
         - { path: ^/favorites,                      roles: ROLE_USER }
 
         # Anonyme : toutes les autres routes
