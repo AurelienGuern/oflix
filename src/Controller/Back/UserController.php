@@ -3,6 +3,7 @@
 namespace App\Controller\Back;
 
 use App\Entity\User;
+use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,17 +71,20 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_back_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        // sauvegarde du mot de passe
-        $oldPassword = $user->getPassword();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($user->getPassword()) {
-                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
-            } else {
-                $user->setPassword($oldPassword);
+            // on récupère la valeur du mot de passe qui est dans le formulaire
+            // REFER :  https://symfony.com/doc/6.4/forms.html#unmapped-fields
+            // $newPassword Le mot de passe présent dans le formulaire */ 
+            $newPassword = $form->get('password')->getData();
+
+            // s'il y a un mot de passe, on le hache et on le mappe avec l'entité
+            if ($newPassword) {
+                
             }
+            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
             try {
                 $entityManager->flush();
             } catch (\Throwable $th) {
