@@ -25,5 +25,5 @@ services:
 
     # on configure le service avec son FQCN
     App\Service\FavoritesManager:
-        arguments:
-            $emptyEnabled: '%env(bool:EMPTY_ENABLED)%'
+      arguments:
+          $emptyEnabled: '%env(bool:EMPTY_ENABLED)%'
