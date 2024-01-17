@@ -77,7 +77,7 @@
 							</p>
 							{{ include('front/main/_starsRating.html.twig', {'stars': movie.rating}) }}
 							{# REFER : https://symfony.com/doc/6.4/templates.html#linking-to-pages #}
-							<a href="{{ path('front_main_show', {id: movie.id}) }}" class="fs-1 mt-3 text-danger align-self-start">
+							<a href="{{ path('front_main_show', {slug: movie.slug}) }}" class="fs-1 mt-3 text-danger align-self-start">
 								<i class="bi bi-arrow-right-square"></i>
 							</a>
 						</div>

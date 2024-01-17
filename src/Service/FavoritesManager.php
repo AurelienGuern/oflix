@@ -64,8 +64,12 @@ class FavoritesManager
         {
             return false;
         }
-        // on récupère la session
-        $session = $this->requestStack->getCurrentRequest()->getSession();
+         // on récupère la session
+         $session = $this->requestStack->getCurrentRequest()->getSession();
+         // on supprime les favoris stockés
+         $session->remove('favorites');
+         return true;
+             $session = $this->requestStack->getCurrentRequest()->getSession();
         // on supprime les favoris stockés
         $session->remove('favorites');
         return true;

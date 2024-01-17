@@ -73,7 +73,7 @@ class MainController extends AbstractController
      * Affiche un fil donné par son identifiant
      * @return Response
      */
-    #[Route('/show/{id<\d+>}', name: 'front_main_show')]
+    #[Route('/show/{slug}', name: 'front_main_show')]
     public function show(Movie $movie = null, CastingRepository $castingRepository): Response
     {
         // On doit récupérer le film avec $id
