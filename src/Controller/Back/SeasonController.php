@@ -17,8 +17,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SeasonController extends AbstractController
 {
     #[Route('/{id<\d+>}', name: 'app_back_season_index', methods: ['GET'])]
-    public function index(Movie $movie, SeasonRepository $seasonRepository): Response
+    public function index(Movie $movie = null, SeasonRepository $seasonRepository): Response
     {
+        if(!$movie)
+        {
+            $this->addFlash(
+                'warning','Le film demandé n\'existe pas.'
+            );
+            return $this->redirectToRoute('app_back_movie_index');
+        }
         return $this->render('back/season/index.html.twig', [
             'seasons'   => $seasonRepository->findByMovie($movie, ['number'=> 'ASC']),
             'movie'     => $movie,
@@ -26,8 +33,15 @@ class SeasonController extends AbstractController
     }
 
     #[Route('/new/{id<\d+>}', name: 'app_back_season_new', methods: ['GET', 'POST'])]
-    public function new(Movie $movie, Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Movie $movie = null, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if(!$movie)
+        {
+            $this->addFlash(
+                'warning','Le film demandé n\'existe pas.'
+            );
+            return $this->redirectToRoute('app_back_movie_index');
+        }
         $season = new Season();
         $season->setMovie($movie);
         $form = $this->createForm(SeasonType::class, $season);
@@ -66,12 +80,19 @@ class SeasonController extends AbstractController
     public function edit(
         Request $request, 
         // #[MapEntity(id: 'idMovie')]
-        Movie $movie,
+        Movie $movie = null,
         #[MapEntity(id: 'idSeason')]
         Season $season, 
         EntityManagerInterface $entityManager
     ): Response
     {
+        if(!$movie)
+        {
+            $this->addFlash(
+                'warning','Le film demandé n\'existe pas.'
+            );
+            return $this->redirectToRoute('app_back_movie_index');
+        }
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 

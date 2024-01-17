@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    // #[Assert\NotBlank()]
+    #[Assert\NotBlank()]
     // TODO : A réactiver avant la mise en production
     // #[Assert\Length(
     //     min: 8,

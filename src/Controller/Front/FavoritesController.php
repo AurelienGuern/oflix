@@ -3,7 +3,8 @@
 
 namespace App\Controller\Front;
 
-use App\Model\MovieModel;
+use App\Entity\Movie;
+use App\Service\FavoritesManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,99 +14,72 @@ use Symfony\Component\HttpFoundation\Request;
 class FavoritesController extends AbstractController
 {
     #[Route('/', name: 'list', methods: ['GET'])]
-    public function list(Request $request): Response
+    public function list(): Response
     {
-        // on récupère la liste des favoris
-        // récupération de la liste actuelle des favoris
-        // $session = $request->getSession();
-        // $favorites = $session->get('favorites', []);
+        // Utilisation de app.session.get('favorites') dans le twig
 
-        // rendu inutile par l'utilisation de app.session.get('favorites') dans le twig
-
-        return $this->render('front/favorites/index.html.twig', [
-            'controller_name' => 'FavoritesController',
-            // 'favorites'         => $favorites,
-        ]);
+        return $this->render('front/favorites/index.html.twig', []);
     }
 
     #[Route('/add/{id<\d+>}', name: 'add', methods: ['POST'])]
-    public function add(int $id, Request $request): Response
+    public function add(FavoritesManager $favoritesManager, Movie $movie = null, Request $request): Response
     {
-        // récupération du film à mettre en favoris
-        $movie = MovieModel::getMovieById($id);
+        // Vérification du film à mettre en favoris
         if ($movie === null) {
             throw $this->createNotFoundException("Le film demandé n'existe pas");
         }
-
-        // récupération de la liste actuelle des favoris
-        $session = $request->getSession();
-        $favorites = $session->get('favorites', []);
-        // on rajoute le film demandé
-        // l'utilisation de array_key_exists garanti l'unicité du favoris
-        if (!array_key_exists($id, $favorites)) {
-            $favorites[$id] = $movie;
-            $session->set('favorites', $favorites);
+        // on délègue toute la partie métier au service Favorites Manager
+        if ($favoritesManager->add($movie)) {
             // on prépare un message flash
             // REFER : https://symfony.com/doc/current/session.html#flash-messages
 
 
             $this->addFlash(
                 'success',
-                '<strong>' . $movie['title'] . '</strong> a été ajouté à votre liste de favoris.'
+                '<strong>' . $movie->getTitle() . '</strong> a été ajouté à votre liste de favoris.'
             );
         } else {
             $this->addFlash(
                 'warning',
-                '<strong>' . $movie['title'] . '</strong> fait déjà partie de votre liste de favoris.'
+                '<strong>' . $movie->getTitle() . '</strong> fait déjà partie de votre liste de favoris.'
             );
         }
-        return $this->redirectToRoute('front_favorites_list', [
-            'controller_name'   => 'FavoritesController',
-            // 'favorites'         => $favorites,
-        ]);
+        return $this->redirectToRoute('front_favorites_list', []);
     }
 
     #[Route('/remove/{id<\d+>}', name: 'remove', methods: ['POST'])]
-    public function remove(int $id, Request $request): Response
+    public function remove(FavoritesManager $favoritesManager, Movie $movie = null, Request $request): Response
     {
-        // récupération du film à supprimer des favoris
-        $movie = MovieModel::getMovieById($id);
+        // Vérification du film à supprimer des favoris
         if ($movie === null) {
             throw $this->createNotFoundException("Le film demandé n'existe pas");
         }
 
-        // récupération de la liste actuelle des favoris
-        $session = $request->getSession();
-        $favorites = $session->get('favorites', []);
-
-        // si l'entrée $id existe, on la supprime
-
-        if (array_key_exists($id, $favorites)) {
-            unset($favorites[$id]);
-            $session->set('favorites', $favorites);
-
+        // on délègue toute la partie métier au service Favorites Manager
+        if ($favoritesManager->remove($movie)) {
             $this->addFlash(
                 'success',
-                '<strong>' . $movie['title'] . '</strong> a été supprimé de votre liste de favoris.'
+                '<strong>' . $movie->getTitle() . '</strong> a été supprimé de votre liste de favoris.'
             );
         }
 
-        return $this->render('front/favorites/index.html.twig', [
-            'controller_name' => 'FavoritesController',
-        ]);
+        return $this->render('front/favorites/index.html.twig', []);
     }
 
     #[Route('/empty', name: 'empty', methods: ['GET'])]
-    public function empty(Request $request): Response
+    public function empty(FavoritesManager $favoritesManager,): Response
     {
-        // récupération de la liste actuelle des favoris
-        $session = $request->getSession();
-        // on supprime les favoris stockés
-        $session->remove('favorites');
-        $this->addFlash(
-            'success',
-            ' Votre liste de favoris a été vidée.'
-        );
+        if ($favoritesManager->empty()) {
+            $this->addFlash(
+                'success',
+                ' Votre liste de favoris a été vidée.'
+            );
+        } else {
+            $this->addFlash(
+                'danger',
+                'La liste des favoris ne peut pas être vidée.'
+            );
+        }
         return $this->render('front/favorites/index.html.twig', [
             'controller_name' => 'FavoritesController',
         ]);

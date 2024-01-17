@@ -89,12 +89,14 @@ document.documentElement.scrollTop = 0; // Pour les autres navigateurs
 								</li>
 							{% endif %}
 						</ul>
+						<div class="mx-auto">
+            				<p class="btn btn-warning">Site du cours</p>
+        				</div>
 
 						{# Le drop down n'est affiché que si on est connecté #}
 						{# REFER : https://symfony.com/doc/6.4/security.html#access-control-in-templates #}
 						{# REFER : https://symfony.com/doc/6.4/security.html#checking-to-see-if-a-user-is-logged-in #}
 
-						
 							{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 							<ul class="navbar-nav ms-auto mb-2 mb-lg-0"> 
 								<li class="nav-item dropdown">
@@ -104,16 +106,27 @@ document.documentElement.scrollTop = 0; // Pour les autres navigateurs
 									</a>
 									<ul class="dropdown-menu">
 										<li>
-											<a class="dropdown-item" href="#">Profil</a>
+											<a class="dropdown-item" href="#">Profil (
+												<small>
+													{# En fonction du role, on donne celui ci #}
+													{# Attention, l'ordre est très important à cause de l'héritage #}
+													{% if is_granted("ROLE_ADMIN") %}
+														Administrateur
+													{% elseif is_granted("ROLE_MANAGER") %}
+														Manager
+													{% elseif is_granted("ROLE_USER") %}
+														Membre
+													{% endif %}
+												</small>
+												)</a>
 										</li>
+										{% if is_granted('ROLE_MANAGER') %}
+											<li>
+												<a class="dropdown-item" href="{{ path('app_back_movie_index') }}">Backoffice</a>
+											</li>
+										{% endif %}
 										<li>
-											<a class="dropdown-item" href="{{ path('app_back_movie_index') }}">Backoffice</a>
-										</li>
-										<li>
-											<hr class="dropdown-divider">
-										</li>
-										<li>
-											<a class="dropdown-item" href="#">Déconnexion</a>
+											<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
 										</li>
 									</ul>
 								</li>
@@ -167,7 +180,7 @@ document.documentElement.scrollTop = 0; // Pour les autres navigateurs
 		</a>
 	{% endif %}
 </html></span></footer><!-- Optional JavaScript; choose one of 
-	        the two! --><!-- Option 1: Bootstrap Bundle with Popper --><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script><!-- Option 2: Separate Popper and Bootstrap JS --><!--
-	    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
-	    --></body></html>
+					        the two! --><!-- Option 1: Bootstrap Bundle with Popper --><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script><!-- Option 2: Separate Popper and Bootstrap JS --><!--
+					    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+					    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+					    --></body></html>

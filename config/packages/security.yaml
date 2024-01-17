@@ -38,10 +38,10 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # ROLE_ADMIN : Sécuriser toutes les routes /add /edit /delete + test
-        - { path: ^/test,                           roles: ROLE_ADMIN }
-        - { path: ^/back/(movie|season)/new,        roles: ROLE_ADMIN }
-        - { path: ^/back/(movie|season)/\d+/edit,   roles: ROLE_ADMIN }
-        - { path: ^/back/(movie|season)/\d+,        roles: ROLE_ADMIN, methods: [POST] }
+        - { path: ^/test,                               roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season|user)/new,       roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season|user)/\d+/edit,  roles: ROLE_ADMIN }
+        - { path: ^/back/(movie|season|user)/\d+,       roles: ROLE_ADMIN, methods: [POST] }
 
         # ROLE_MANAGER : accès aux pages de listes movie, genres etc. et pages show (si existantes).
         - { path: ^/back,                           roles: ROLE_MANAGER }

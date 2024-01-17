@@ -3,21 +3,21 @@
 namespace App\Controller\Back;
 
 use App\Entity\User;
-use App\Form\UserEditType;
 use App\Form\UserType;
+use App\Form\UserEditType;
+use InvalidArgumentException;
+use PhpParser\Node\Stmt\TryCatch;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException as GlobalLogicException;
-use InvalidArgumentException;
-use PhpParser\Node\Stmt\TryCatch;
 use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
+use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Exception\LogicException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/back/user')]
 class UserController extends AbstractController
@@ -82,9 +82,8 @@ class UserController extends AbstractController
 
             // s'il y a un mot de passe, on le hache et on le mappe avec l'entité
             if ($newPassword) {
-                
+                $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
             }
-            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
             try {
                 $entityManager->flush();
             } catch (\Throwable $th) {
