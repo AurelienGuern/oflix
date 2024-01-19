@@ -2,6 +2,10 @@
 
 namespace App\Command;
 
+use App\Repository\MovieRepository;
+use App\Service\MySlugger;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,12 +15,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'Movies:Poster',
-    description: 'Ajouter l\'affiche du film en fonction de son titre',
+    name: 'movies:slugify',
+    description: 'Création des slugs pour les titres en base',
 )]
-class MoviesPosterCommand extends Command
+class MoviesSlugifyCommand extends Command
 {
-    public function __construct()
+    public function __construct(
+        private MovieRepository $movieRepository,
+        private MySlugger $slugger,
+        private EntityManagerInterface $entityManager
+    )
     {
         parent::__construct();
     }
@@ -25,18 +33,37 @@ class MoviesPosterCommand extends Command
     {
         $this
             ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $arg1 = $input->getArgument('arg1');
 
-        // on récupère tous les films
-        // pour chaque film on récupère le poster s'il 
+        if ($arg1) {
+            $io->note(sprintf('You passed an argument: %s', $arg1));
+        }
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        if ($input->getOption('option1')) {
+            // ...
+        }
+        // dans cette partie, on rentre la logique de notre commande
+
+        // on veut "slugifier" les titres des films en base de donnée
+        // Récupérer ces titres
+        $movies = $this->movieRepository->findAll();
+        // parcourir les movies
+        foreach ($movies as $movie) {
+            // leur appliquer le slugify
+            $movie->setSlug($this->slugger->slugify($movie->getTitle()));
+            // on persiste le movie
+            $this->entityManager->persist($movie);
+        }
+        // les sauvegarder
+        $this->entityManager->flush();
+
+        $io->success('La mise à jour des slugs est terminée');
 
         return Command::SUCCESS;
     }
