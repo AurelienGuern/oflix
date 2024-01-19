@@ -8,6 +8,8 @@ class OmdbApi
 {
     public function __construct(
         private HttpClientInterface $client,
+        private string $apikey
+
     ) {
     }
     public function fetchPoster(string $title)
@@ -18,7 +20,7 @@ class OmdbApi
             'http://www.omdbapi.com/', [
                 // these values are automatically encoded before including them in the URL
                 'query' => [
-                    'apikey' => '5ae01ce1',
+                    'apikey' => $this->apikey,
                     't' => $title,
                 ],
             ]);
