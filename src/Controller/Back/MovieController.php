@@ -5,6 +5,7 @@ namespace App\Controller\Back;
 use App\Entity\Movie;
 use App\Form\MovieType;
 use App\Repository\MovieRepository;
+use App\Service\MySlugger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,13 +24,14 @@ class MovieController extends AbstractController
     }
 
     #[Route('/new', name: 'app_back_movie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, MySlugger $slugger): Response
     {
         $movie = new Movie();
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $movie->setSlug($slugger->slugify($movie->getTitle()));
             $entityManager->persist($movie);
             $entityManager->flush();
 
@@ -58,12 +60,13 @@ class MovieController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/edit', name: 'app_back_movie_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Movie $movie, EntityManagerInterface $entityManager, MySlugger $slugger): Response
     {
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $movie->setSlug($slugger->slugify($movie->getTitle()));
             $entityManager->flush();
 
             // on prépare un message flash

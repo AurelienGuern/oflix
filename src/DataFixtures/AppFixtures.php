@@ -15,8 +15,8 @@ use App\Repository\ReviewRepository;
 use Bluemmb\Faker\PicsumPhotosProvider;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use App\DataFixtures\Provider\OflixProvider;
+use App\Service\MySlugger;
 
 class AppFixtures extends Fixture
 {
@@ -24,7 +24,8 @@ class AppFixtures extends Fixture
     private $persons = [];
 
     public function __construct(
-        private ReviewRepository $reviewRepository
+        private ReviewRepository $reviewRepository,
+        private MySlugger $slugger
     ) {
     }
 
@@ -86,25 +87,17 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 50; $i++) {
             $movie = new Movie;
-            $slugger = new AsciiSlugger();
-            $options = [
-                'lowercase' => true,
-            ];
-
             // si un movie est une série alors il y a des saison
             if ($faker->boolean()) {
                 // c'est un film
                 $movie->setTitle($faker->unique()->movie());
                 $movie->setType('Film');
                 $movie->setDuration(random_int(80, 330));
-                $movie->setSlug($slugger->slug($movie->getTitle())->lower());
             } else {
                 // c'est une série
                 $movie->setTitle($faker->unique()->tvShow());
                 $movie->setType('Série');
                 $movie->setDuration(random_int(25, 60));
-                $movie->setSlug($slugger->slug($movie->getTitle())->lower());
-
                 // il y a aussi des saisons
                 for ($j = 1; $j < random_int(2, 12); $j++) {
                     $season = new Season;
@@ -120,6 +113,7 @@ class AppFixtures extends Fixture
             $movie->setSynopsis($faker->optional(0.9)->realText());
             $movie->setPoster($faker->optional(0.9)->imageUrl(200, 300, true));
             $movie->setRating(null);
+            $movie->setSlug($this->slugger->slugify($movie->getTitle()));
 
             // on associe entre 0 et 4 genres à un movie
             for ($j = 0; $j < random_int(0, 5); $j++) {
