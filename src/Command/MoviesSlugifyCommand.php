@@ -2,6 +2,10 @@
 
 namespace App\Command;
 
+use App\Repository\MovieRepository;
+use App\Service\MySlugger;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +20,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class MoviesSlugifyCommand extends Command
 {
-    public function __construct()
+    public function __construct(
+        private MovieRepository $movieRepository,
+        private MySlugger $slugger,
+        private EntityManagerInterface $entityManager
+    )
     {
         parent::__construct();
     }
@@ -42,10 +50,20 @@ class MoviesSlugifyCommand extends Command
         }
         // dans cette partie, on rentre la logique de notre commande
 
-        $date = new \DateTime();
+        // on veut "slugifier" les titres des films en base de donnée
+        // Récupérer ces titres
+        $movies = $this->movieRepository->findAll();
+        // parcourir les movies
+        foreach ($movies as $movie) {
+            // leur appliquer le slugify
+            $movie->setSlug($this->slugger->slugify($movie->getTitle()));
+            // on persiste le movie
+            $this->entityManager->persist($movie);
+        }
+        // les sauvegarder
+        $this->entityManager->flush();
 
-
-        $io->success('Bonjour ' . $arg1 . ' nous sommes le :' . $date->format('d m Y'));
+        $io->success('La mise à jour des slugs est terminée');
 
         return Command::SUCCESS;
     }

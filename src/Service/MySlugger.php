@@ -17,7 +17,8 @@ class MySlugger
     public function slugify(string $text): string
     {
         $slug = $this->slugger->slug($text);
-        if ($this->toLower) {
+        if ($this->toLower) 
+        {
             $slug = $slug->lower();
         }
 
