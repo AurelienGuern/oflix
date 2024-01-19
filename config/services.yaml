@@ -33,6 +33,7 @@ services:
         arguments:
             $toLower: '%env(bool:TO_LOWER)%'
 
-  App\Service\OmdbApi:
+
+    App\Service\OmdbApi:
         arguments:
-            $apikey: '%env(string:APIKEY)'
+            $apikey: '%env(string:APIKEY)%'
