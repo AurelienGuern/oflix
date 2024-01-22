@@ -30,6 +30,9 @@ class RandomMovieSubscriber implements EventSubscriberInterface
         // on prend le premier élément
         $randomMovie = $movies[0];
 
+        // AUTRE METHODE
+        // $randomMovie = $this->movieRepository->findOneByRandom();
+
         // on met le $randomMovie à disposition des twigs
         $this->twig->addGlobal('randomMovie', $randomMovie);
     }

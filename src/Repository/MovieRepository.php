@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Func;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -36,57 +37,66 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Movie[] Returns an array of Movie objects
-    */
-   public function findAllOrderByTitleAscQB(string $search = null): array
-   {
-       $qb = $this->createQueryBuilder('m')
-           ->orderBy('m.title', 'ASC');
+     * @return Movie[] Returns an array of Movie objects
+     */
+    public function findAllOrderByTitleAscQB(string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->orderBy('m.title', 'ASC');
 
         if ($search) {
             $qb->andWhere('m.title LIKE :param')
                 ->setParameter('param', '%' . $search . '%');
         }
 
-       return $qb->getQuery()->getResult();
-   }
+        return $qb->getQuery()->getResult();
+    }
 
     /**
-    * @return Movie[] Returns an array of Movie objects
-    */
+     * @return Movie[] Returns an array of Movie objects
+     */
     public function findAllOrderByDateDescQB(int $offset = 0, int $limit = PHP_INT_MAX): array
     {
         return $this->createQueryBuilder('m')
             ->orderBy('m.releaseDate ', 'DESC')
-            ->setMaxResults( $limit )
-            ->setFirstResult( $offset )
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
-//    /**
-//     * @return Movie[] Returns an array of Movie objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findOneByRandom()
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('RAND()')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
 
-//    public function findOneBySomeField($value): ?Movie
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    }
+
+    //    /**
+    //     * @return Movie[] Returns an array of Movie objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('m.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Movie
+    //    {
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
