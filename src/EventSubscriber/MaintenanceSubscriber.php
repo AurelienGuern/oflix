@@ -9,7 +9,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class MaintenanceSubscriber implements EventSubscriberInterface
 {
-   
+    public function __construct(
+        // on injecte le paramètre qui provient du services.yaml et du .env
+        private bool $displayMaintenance
+    )
+    {
+    }
 
     public static function getSubscribedEvents(): array
     {

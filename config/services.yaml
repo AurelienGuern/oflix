@@ -37,3 +37,7 @@ services:
     App\Service\OmdbApi:
         arguments:
             $apikey: '%env(string:APIKEY)%'
+
+    App\EventSubscriber\MaintenanceSubscriber: 
+     arguments:
+            $displayMaintenance: '%env(bool:onKernelController)%'
