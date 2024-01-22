@@ -157,6 +157,13 @@ document.documentElement.scrollTop = 0; // Pour les autres navigateurs
 					</div>
 				{% endfor %}
 			{% endfor %}
+
+				{# Affichage du film random généré par le subscriber #}
+			<div class="text-center border-top pt-3">
+				<p>Un film au hasard :
+					<a href="{{ path('front_main_show', {slug: randomMovie.slug}) }}">{{ randomMovie.title }}</a>
+				</p>
+			</div>
 			{# Bouton de retour #}
 			<button onclick="topFunction()" id="myBtn" title="Retour en haut">&#9650;</button>
 

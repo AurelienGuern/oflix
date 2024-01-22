@@ -12,7 +12,7 @@ class RandomMovieSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private MovieRepository $movieRepository,
-        Environment $twig
+        private Environment $twig
     ) {
     }
 
