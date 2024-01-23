@@ -1,14 +1,18 @@
 <?php
+// Fichier : Movie.php | Date: 2024-01-22 | Auteur: Patrick SUFFREN
 
 namespace App\Entity;
 
-use App\Repository\MovieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\MovieRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
+// When using attributes, don't forget to add #[ORM\HasLifecycleCallbacks]
+// to the class of the entity where you define the callback
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -62,11 +66,13 @@ class Movie
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true, cascade: ["remove"])]
     #[ORM\OrderBy(["number" => "ASC"])]
+    #[Groups(['get_item'])]
     private Collection $seasons;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movies')]
     // REFER : https://symfony.com/doc/current/reference/constraints/Count.html
     #[Assert\Count(min:2, max:5)]
+    #[Groups(['get_item'])]
     private Collection $genres;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class, orphanRemoval: true)]
@@ -333,10 +339,11 @@ class Movie
 
         return $this;
     }
-  // REFER : https://symfony.com/doc/6.4/doctrine/events.html#doctrine-lifecycle-callbacks
-  #[ORM\PreUpdate]
-  public function setUpdatedAtValue(): void
-  {
-      $this->updatedAt = new \DateTimeImmutable();
-  }
+
+    // REFER : https://symfony.com/doc/6.4/doctrine/events.html#doctrine-lifecycle-callbacks
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
 }

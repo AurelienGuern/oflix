@@ -1,10 +1,12 @@
 <?php
+// Fichier : Season.php | Date: 2024-01-22 | Auteur: Patrick SUFFREN
 
 namespace App\Entity;
 
-use App\Repository\SeasonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SeasonRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SeasonRepository::class)]
 class Season
@@ -15,9 +17,11 @@ class Season
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['get_item'])]
     private ?int $number = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['get_item'])]
     private ?int $episodesNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
