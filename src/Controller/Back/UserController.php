@@ -1,21 +1,15 @@
 <?php
+// Fichier : UserController.php | Date: 2024-01-22 | Auteur: Patrick SUFFREN
 
 namespace App\Controller\Back;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Form\UserEditType;
-use InvalidArgumentException;
-use PhpParser\Node\Stmt\TryCatch;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException as GlobalLogicException;
-use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -71,7 +65,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_back_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(UserEditType::class, $user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
