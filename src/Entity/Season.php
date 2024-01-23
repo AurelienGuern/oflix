@@ -17,11 +17,11 @@ class Season
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?int $number = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?int $episodesNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]

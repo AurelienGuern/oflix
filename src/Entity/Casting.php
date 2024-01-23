@@ -1,9 +1,11 @@
 <?php
+// Fichier : Casting.php | Date: 2024-01-22 | Auteur: Patrick SUFFREN
 
 namespace App\Entity;
 
-use App\Repository\CastingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CastingRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CastingRepository::class)]
 #[ORM\UniqueConstraint(fields: ['person', 'movie', 'role'])]
@@ -15,6 +17,7 @@ class Casting
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['get_item'])]
     private ?string $role = null;
 
     #[ORM\Column]
@@ -22,6 +25,7 @@ class Casting
 
     #[ORM\ManyToOne(inversedBy: 'castings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['get_item'])]
     private ?Person $person = null;
 
     #[ORM\ManyToOne(inversedBy: 'castings')]

@@ -18,7 +18,7 @@ class Genre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, inversedBy: 'genres')]

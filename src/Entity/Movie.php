@@ -21,26 +21,28 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?string $title = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\Positive]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private ?int $duration = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -49,6 +51,7 @@ class Movie
     #[ORM\Column(length: 2083, nullable: true)]
     #[Assert\Length(max: 2083)]
     #[Assert\Url()]
+    #[Groups(['get_item'])]
     private ?string $poster = null;
 
     // Le rating est calculé sur la base des différentes critiques
@@ -66,17 +69,18 @@ class Movie
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true, cascade: ["remove"])]
     #[ORM\OrderBy(["number" => "ASC"])]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private Collection $seasons;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movies')]
     // REFER : https://symfony.com/doc/current/reference/constraints/Count.html
     #[Assert\Count(min:2, max:5)]
-    #[Groups(['get_item'])]
+    #[Groups(['get_collection', 'get_item'])]
     private Collection $genres;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class, orphanRemoval: true)]
     #[ORM\OrderBy(["creditOrder" => "ASC"])]
+    #[Groups(['get_item'])]
     // REFER : https://www.doctrine-project.org/projects/doctrine-orm/en/2.17/reference/attributes-reference.html#attrref_orderby
     private Collection $castings;
 
