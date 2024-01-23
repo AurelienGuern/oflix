@@ -16,6 +16,6 @@ class ApiController extends AbstractController
     {
         // cette méthode met à disposition tous les movies de la base
         $movies = $movieRepository->findAll();
-        return $this->json($movies);
+        return $this->json($movies,200,[],['groups' => 'get_item']);
     }
 }
