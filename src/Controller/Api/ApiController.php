@@ -2,7 +2,9 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,5 +40,31 @@ class ApiController extends AbstractController
         // cette méthode met à disposition tous les movies de la base
         
         return $this->json($movie,200,[],['groups' => 'get_item']);
+    }
+
+
+
+
+     #[Route('/api/movies/random}', name: 'api_movies_get_item', methods: ['GET'])]
+    public function getRandom(Movie $movie): JsonResponse
+    {
+        
+        return $this->json($movie,200,[],['groups' => 'get_random']);
+    }
+
+    #[Route('/api/genres}', name: 'api_movies_get_item', methods: ['GET'])]
+    public function getGenres(GenreRepository $genreRepository): JsonResponse
+    {
+        // cette méthode met à disposition tous les movies de la base
+        
+        return $this->json($genreRepository->findAll(),200,[],['groups' => 'get_genres']);
+    }
+
+    #[Route('/api/genres/{id<\d+>/movies}', name: 'api_movies_get_item', methods: ['GET'])]
+    public function getOneGenre(Genre $genre): JsonResponse
+    {
+        // cette méthode met à disposition tous les movies de la base
+        
+        return $this->json($genre,200,[],['groups' => 'get_genre']);
     }
 }

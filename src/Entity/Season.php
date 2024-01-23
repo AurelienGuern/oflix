@@ -17,7 +17,7 @@ class Season
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(['get_collection', 'get_item'])]
+    #[Groups(['get_collection', 'get_item', 'get_genres', 'get_genre'])]
     private ?int $number = null;
 
     #[ORM\Column(type: Types::SMALLINT)]

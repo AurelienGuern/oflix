@@ -51,7 +51,7 @@ class Movie
     #[ORM\Column(length: 2083, nullable: true)]
     #[Assert\Length(max: 2083)]
     #[Assert\Url()]
-    #[Groups(['get_item'])]
+    #[Groups(['get_item', 'get_random'])]
     private ?string $poster = null;
 
     // Le rating est calculé sur la base des différentes critiques
