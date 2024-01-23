@@ -25,19 +25,18 @@ services:
 
     # on configure le service avec son FQCN
     App\Service\FavoritesManager:
-      arguments:
-          $emptyEnabled: '%env(bool:EMPTY_ENABLED)%'
-
+        arguments:
+            $emptyEnabled: '%env(bool:EMPTY_ENABLED)%'
 
     App\Service\MySlugger:
         arguments:
             $toLower: '%env(bool:TO_LOWER)%'
 
-
     App\Service\OmdbApi:
         arguments:
             $apikey: '%env(string:APIKEY)%'
 
-    App\EventSubscriber\MaintenanceSubscriber: 
-     arguments:
-            $displayMaintenance: '%env(bool:onKernelController)%'
+    App\EventSubscriber\MaintenanceSubscriber:
+        arguments:
+            $isMaintenance: '%env(bool:IS_MAINTENANCE)%'
+            $maintenanceDate: '%env(string:MAINTENANCE_DATE)%'
