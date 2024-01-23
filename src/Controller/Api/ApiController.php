@@ -2,17 +2,20 @@
 
 namespace App\Controller\Api;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use App\Repository\MovieRepository;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
+// REFER : https://symfony.com/doc/6.4/controller.html#returning-json-response
 class ApiController extends AbstractController
 {
-    #[Route('/api/api', name: 'app_api_api')]
-    public function index(): Response
+    #[Route('/api/movies', name: 'api_movies_get')]
+    public function getCollection(MovieRepository $movieRepository): JsonResponse
     {
-        return $this->render('api/api/index.html.twig', [
-            'controller_name' => 'ApiController',
-        ]);
+        // cette méthode met à disposition tous les movies de la base
+        $movies = $movieRepository->findAll();
+        return $this->json($movies);
     }
 }
