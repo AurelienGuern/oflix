@@ -21,12 +21,12 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['get_collection', 'get_item'])]
+    #[Groups(['get_collection', 'get_item', 'get_random'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
-    #[Groups(['get_collection', 'get_item'])]
+    #[Groups(['get_collection', 'get_item', 'get_genre', 'get_random'])]
     private ?string $title = null;
 
     #[ORM\Column]
@@ -37,12 +37,12 @@ class Movie
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\Positive]
-    #[Groups(['get_collection', 'get_item'])]
+    #[Groups(['get_collection', 'get_item', 'get_random'])]
     private ?int $duration = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
-    #[Groups(['get_item'])]
+    #[Groups(['get_item', 'get_random'])]
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -75,7 +75,7 @@ class Movie
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movies')]
     // REFER : https://symfony.com/doc/current/reference/constraints/Count.html
     #[Assert\Count(min:2, max:5)]
-    #[Groups(['get_collection', 'get_item'])]
+    #[Groups(['get_collection', 'get_item', 'get_random'])]
     private Collection $genres;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class, orphanRemoval: true)]

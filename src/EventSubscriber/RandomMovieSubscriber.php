@@ -35,5 +35,6 @@ class RandomMovieSubscriber implements EventSubscriberInterface
 
         // on met le $randomMovie à disposition des twigs
         $this->twig->addGlobal('randomMovie', $randomMovie);
+        
     }
 }
