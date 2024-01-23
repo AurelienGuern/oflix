@@ -6,6 +6,7 @@ use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -16,10 +17,12 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get_item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?string $title = null;
 
     #[ORM\Column]
@@ -29,6 +32,7 @@ class Movie
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\Positive]
+    #[Groups(['get_item'])]
     private ?int $duration = null;
 
     #[ORM\Column(length: 255)]
