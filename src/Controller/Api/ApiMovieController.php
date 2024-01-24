@@ -4,11 +4,14 @@ namespace App\Controller\Api;
 
 use App\Entity\Movie;
 use App\Repository\MovieRepository;
+use App\Service\MySlugger;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
+
 
 // REFER : https://symfony.com/doc/6.4/controller.html#returning-json-response
 #[Route('/api/movies', name: 'api_movies_')]
@@ -62,14 +65,25 @@ class ApiMovieController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'new', methods: ['POST'])]
-    public function new(Request $request, SerializerInterface $serializer): JsonResponse
+    public function new(EntityManagerInterface $entityManager, MySlugger $mySlugger, Request $request, SerializerInterface $serializer): JsonResponse
     {
         // Récupérer les informations JSON
         $json = $request->getContent();
         // Attention lors des tests avec Postman, il faut rajoute un '/' à la fin de l'URL en POST
         // désérialisation du JSON pour obtenir un objet Movie
         // REFER : https://symfony.com/doc/6.4/serializer.html#serializer-context
+        // Pour récupérer les genres, il faut utiliser un normalizer
+        // qui transforme les identifiants du genre en objet Genre
+        // REFER : https://gist.github.com/benlac/c9efc733ee16ebd0d438119bcccb92b9
         $movie = $serializer->deserialize($json, Movie::class, 'json');
+
+        // on rajoute le slug à notre $movie
+        $movie->setSlug($mySlugger->slugify($movie->getTitle()));
+
+        // persiste et flush
+        $entityManager->persist($movie);
+        $entityManager->flush();
+
 
         dd($movie);
         return $this->json($json,200,[],['groups' => 'get_movies_collection']);
