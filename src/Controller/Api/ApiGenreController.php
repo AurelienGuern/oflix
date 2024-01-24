@@ -27,9 +27,9 @@ class ApiGenreController extends AbstractController
     }
 
     // /**
-    //  * Renvoi des détails d'un film donné pour affichage de ce film
+    //  * Renvoi films d'un genre donné 
     //  *
-    //  * @param GenreRepository $genreRepository
+    //  * @param Genre $genre
     //  * @return JsonResponse
     //  */
     #[Route('/api/genres/{id<\d+>}/movies', name: 'api_genres_item_movies', methods: ['GET'])]
