@@ -83,9 +83,6 @@ class ApiMovieController extends AbstractController
         // persiste et flush
         $entityManager->persist($movie);
         $entityManager->flush();
-
-
-        dd($movie);
-        return $this->json($json,200,[],['groups' => 'get_movies_collection']);
+        return $this->json($json,201,[],['groups' => 'get_movies_collection']);
     }
 }
