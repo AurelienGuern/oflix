@@ -15,13 +15,15 @@ class Genre
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get_genre_item_movies'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['get_collection', 'get_item', 'get_genre', 'get_genres', 'get_random'])]
+    #[Groups(['get_movies_collection', 'get_movie_item', 'get_genres_collection', 'get_genre_item_movies'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, inversedBy: 'genres')]
+    #[Groups(['get_genre_item_movies'])]
     private Collection $movies;
 
     public function __construct()
