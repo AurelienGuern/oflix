@@ -3,14 +3,17 @@
 namespace App\Controller\Api;
 
 use App\Entity\Movie;
-use App\Repository\MovieRepository;
 use App\Service\MySlugger;
+use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 
 // REFER : https://symfony.com/doc/6.4/controller.html#returning-json-response
@@ -65,8 +68,13 @@ class ApiMovieController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/', name: 'new', methods: ['POST'])]
-    public function new(EntityManagerInterface $entityManager, MySlugger $mySlugger, Request $request, SerializerInterface $serializer): JsonResponse
-    {
+    public function new(
+        EntityManagerInterface $entityManager,
+        MySlugger $mySlugger,
+        Request $request,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ): JsonResponse {
         // Récupérer les informations JSON
         $json = $request->getContent();
         // Attention lors des tests avec Postman, il faut rajoute un '/' à la fin de l'URL en POST
@@ -80,9 +88,22 @@ class ApiMovieController extends AbstractController
         // on rajoute le slug à notre $movie
         $movie->setSlug($mySlugger->slugify($movie->getTitle()));
 
+        // on valide l'entité reconstruite
+        // REFER : https://symfony.com/doc/current/validation.html#using-the-validator-service
+        $errors = $validator->validate($movie);
+
+        // on vérifie si on a des erreurs
+        // on utilise le Return Early Pattern
+        if (count($errors)) {
+            return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+
         // persiste et flush
         $entityManager->persist($movie);
         $entityManager->flush();
-        return $this->json($json,201,[],['groups' => 'get_movies_collection']);
+
+        // on retourne le film crée au client
+        return $this->json($movie, 201, [], ['groups' => 'get_movie_item']);
     }
 }
