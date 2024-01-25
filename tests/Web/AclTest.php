@@ -2,6 +2,7 @@
 
 namespace App\Tests\Web;
 
+use App\Repository\UserRepository;
 use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -45,15 +46,43 @@ class AclTest extends WebTestCase
         ];
     }
 
-        // Utilisation d'un dataprovider
+    // Utilisation d'un dataprovider
     // REFER : https://docs.phpunit.de/en/10.5/writing-tests-for-phpunit.html#data-providers
     public static function urlConnectedProvider(): array
     {
         return [
-            ['/', 200],
-            ['/movies', 200],
-            ['/show/Chinatown', 200],
-            ['/review/42', 200]
+            ['/',                       200, 'GET', 'manager@manager.com'],
+            ['/list', 200, 'GET', 'manager@manager.com'],
+            ['/show/joker', 200, 'GET', 'manager@manager.com'],
+            ['/movie/33/review/new', 200, 'GET', 'manager@manager.com'],
+            ['/back/movie', 301, 'GET', 'manager@manager.com'],
+            ['/back/movie/new', 403, 'GET', 'manager@manager.com'],
+            ['/back/movie/new', 200, 'GET', 'admin@admin.com'],
         ];
+    }
+
+    // REFER : https://symfony.com/blog/new-in-symfony-5-1-simpler-login-in-tests
+    /**
+     * @dataProvider urlConnectedProvider
+     */
+    public function testStatusCodeConnected($url, $expectedStatusCode, $method, $user): void
+    {
+        // création d'un faux navigateur
+        $client = static::createClient();
+
+        // connecter un utilisateur
+        // get or create the user somehow (e.g. creating some users only
+        // for tests while loading the test fixtures)
+        // On n'est pas dans un service de Symfont, on ne peut donc pas injecter de dépendances
+        // On doit donc récupérer le conteneur de service
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail($user);
+
+        $client->loginUser($testUser);
+
+        // Exécution d'une requête
+        $crawler = $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
 }
