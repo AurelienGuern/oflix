@@ -86,4 +86,8 @@ class AclTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
+
+    // on peut tout tester
+    // par exemple pour les formulaires
+    // REFER : https://symfony.com/doc/6.4/form/unit_testing.html
 }
