@@ -52,12 +52,13 @@ class AclTest extends WebTestCase
     {
         return [
             ['/',                       200, 'GET', 'manager@manager.com'],
-            ['/list', 200, 'GET', 'manager@manager.com'],
-            ['/show/joker', 200, 'GET', 'manager@manager.com'],
-            ['/movie/33/review/new', 200, 'GET', 'manager@manager.com'],
-            ['/back/movie', 301, 'GET', 'manager@manager.com'],
-            ['/back/movie/new', 403, 'GET', 'manager@manager.com'],
-            ['/back/movie/new', 200, 'GET', 'admin@admin.com'],
+            ['/movies',                 200, 'GET', 'manager@manager.com'],
+            ['/show/Chinatown',         200, 'GET', 'manager@manager.com'],
+            ['/review/42',              200, 'GET', 'manager@manager.com'],
+            ['/back/movie',             301, 'GET', 'manager@manager.com'],
+            ['/back/movie/new',         403, 'GET', 'user@user.com'],
+            ['/back/movie/new',         403, 'GET', 'manager@manager.com'],
+            ['/back/movie/new',         200, 'GET', 'admin@admin.com'],
         ];
     }
 
