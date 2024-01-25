@@ -44,8 +44,14 @@ class ApiMovieController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/{id<\d+>}', name: 'get_item', methods: ['GET'])]
-    public function getItem(Movie $movie): JsonResponse
+    public function getItem(Movie $movie = null): JsonResponse
     {
+
+        // si aucun film lié à l'ID --> 
+        if (null === $movie) {
+        return $this->json(['message' => "Le film demandé n'existe pas"], Response::HTTP_NOT_FOUND);
+    }
+
         // cette méthode met à disposition le détail d'un film donné
         return $this->json($movie, 200, [], ['groups' => 'get_movie_item']);
     }
