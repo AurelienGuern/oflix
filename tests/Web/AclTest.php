@@ -108,11 +108,16 @@ class AclTest extends WebTestCase
         $client->loginUser($testUser);
 
         // on appelle la page d'ajout d'une revue
-        $crawler = $client->request('GET', '/review/'.$id);
+        $crawler = $client->request('GET', '/review/' . $id);
 
         // on vérifie qu'on est bien sur la page du formulaire d'ajout
         $this->assertResponseStatusCodeSame($returnGet);
 
+        // vérifier le code de réponse
+        if ($client->getResponse()->getStatusCode() !== 200) {
+            // Si le code de réponse n'est pas 200, arrêter le traitement
+            return;
+        }
         // on rempli le formulaire
         $crawler = $client->submitForm('Ajouter', [
             'review[username]'      => $userName,
@@ -125,13 +130,13 @@ class AclTest extends WebTestCase
 
         // on fois soumis, on attend un retour 302
         $this->assertResponseStatusCodeSame($returnPost);
-
     }
 
     public static function urlReview()
     {
         return [
             ['32', 'Patrick', 200, 302],
+            ['32', '', 200, 422],
             ['666', 'Patrick', 404, 302],
         ];
     }
