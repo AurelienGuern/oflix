@@ -90,4 +90,49 @@ class AclTest extends WebTestCase
     // on peut tout tester
     // par exemple pour les formulaires
     // REFER : https://symfony.com/doc/6.4/form/unit_testing.html
+    // REFER : https://symfony.com/doc/6.4/testing.html#submitting-forms
+
+    // Tester Ajout d'une critique en POST
+
+    /**
+     * @dataProvider urlReview
+     */
+    public function testAddReview($id, $userName, $returnGet, $returnPost)
+    {
+        // on instancie un client
+        $client = static::createClient();
+
+        // connecter un utilisateur
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('user@user.com');
+        $client->loginUser($testUser);
+
+        // on appelle la page d'ajout d'une revue
+        $crawler = $client->request('GET', '/review/'.$id);
+
+        // on vérifie qu'on est bien sur la page du formulaire d'ajout
+        $this->assertResponseStatusCodeSame($returnGet);
+
+        // on rempli le formulaire
+        $crawler = $client->submitForm('Ajouter', [
+            'review[username]'      => $userName,
+            'review[email]'         => 'Patrick@patrick.com',
+            'review[content]'       => 'La revue de Patrick',
+            'review[rating]'        => '5',
+            'review[reactions]'     => ['smile', 'cry'],
+            'review[watchedAt]'     => '2024-01-26 10:19:00',
+        ]);
+
+        // on fois soumis, on attend un retour 302
+        $this->assertResponseStatusCodeSame($returnPost);
+
+    }
+
+    public static function urlReview()
+    {
+        return [
+            ['32', 'Patrick', 200, 302],
+            ['666', 'Patrick', 404, 302],
+        ];
+    }
 }
