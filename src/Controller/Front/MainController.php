@@ -8,6 +8,7 @@ use App\Model\MovieModel;
 use App\Repository\CastingRepository;
 use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -21,13 +22,20 @@ class MainController extends AbstractController
      * @return Response 
      */
     #[Route('/', name: 'front_main_home')]
-    public function home(MovieRepository $movieRepository): Response
+    public function home(MovieRepository $movieRepository, PaginatorInterface $paginator, Request $request): Response
     {
         // On doit récupérer la liste des films
         // $movies = MovieModel::getMovies();
         // $movies = $movieRepository->findAll();
         // utilisation d'une requete personnalisée
-        $movies = $movieRepository->findAllOrderByDateDescQB(5, 5);
+        // $movies = $movieRepository->findAllOrderByDateDescQB(5, 5);
+        $moviesAll = $movieRepository->findBy([], ['releaseDate' => 'DESC']);
+
+        $movies = $paginator->paginate(
+            $moviesAll, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            4 /*limit per page*/
+        );
         // dd($movies);
         // tri des $movies par ordre de sortie décroissant
         // REFER : https://www.php.net/manual/fr/function.usort
