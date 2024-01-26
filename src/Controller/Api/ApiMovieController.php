@@ -183,26 +183,4 @@ class ApiMovieController extends AbstractController
 
         return $this->json($movie, Response::HTTP_NO_CONTENT);
     }
-
-    #[Route('/page/{page<\d+>}', name: 'get', methods: ['GET'])]
-    public function getPageCollection(int $page, MovieRepository $movieRepository): JsonResponse
-    {
-        // cette méthode met à disposition tous les movies de la base
-        $startMovieNumber = ($page - 1) * $this->nbMovies;
-
-        $movies = $movieRepository->findBy([],null,$this->nbMovies, $startMovieNumber);
-        return $this->json($movies, 200, [], ['groups' => 'get_movies_collection']);
-    }
-
-    #[Route('/page/{page<\d+>}', name: 'get', methods: ['GET'])]
-    public function getPageCollection(int $page, MovieRepository $movieRepository): JsonResponse
-    {
-        // cette méthode met à disposition tous les movies de la base
-        $startMovieNumber = ($page - 1) * $this->nbMovies;
-
-        $movies = $movieRepository->findBy([],null,$this->nbMovies, $startMovieNumber);
-        return $this->json($movies, 200, [], ['groups' => 'get_movies_collection']);
-    }
-    
-
 }
