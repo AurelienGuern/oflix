@@ -24,3 +24,5 @@ import-external-repo.sh
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+/documentation
